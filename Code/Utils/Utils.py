@@ -1,3 +1,4 @@
+from .animation import *
 import pygame
 
 def create_elements(el):
@@ -10,11 +11,13 @@ def create_elements(el):
 
     return rect
 
-def draw_element(screen, element, joueur):
-    pygame.draw.rect(screen, (0, 255, 100), joueur) # joueur
+def draw_element(screen, element, joueur, en_contact, direction, d_save, anim_index):
+    pygame.draw.rect(screen, (0, 255, 100), joueur)
+    player_animation(screen, en_contact, d_save, joueur, direction, anim_index)
     for p in element:
         #if p["type"] == "platform":
             pygame.draw.rect(screen, (200, 200, 200), p["rect"]) # Plateformes
+
 
 def collision(joueur, plateformes, vy, vx, keys):
     en_contact = False
@@ -48,8 +51,9 @@ def collision(joueur, plateformes, vy, vx, keys):
 
 def mouvement(gravite, plateformes, friction, vitesse_max, joueur, acceleration, vx, vy):
     # Mouvement horizontal
-    keys = pygame.key.get_pressed()
     direction = 0
+    keys = pygame.key.get_pressed()
+
     if keys[pygame.K_LEFT] or keys[pygame.K_q]:
         direction = -1
     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
@@ -81,5 +85,5 @@ def mouvement(gravite, plateformes, friction, vitesse_max, joueur, acceleration,
     if (keys[pygame.K_SPACE] or keys[pygame.K_UP]) and en_contact:
         vy = -16
 
-    return vx, vy
+    return vx, vy, en_contact, direction
 
