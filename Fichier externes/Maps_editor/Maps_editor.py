@@ -172,6 +172,7 @@ while run:
         hitbox.append({'rect': pygame.Rect(delete[-1][0] * 10, delete[-1][1] * 10, 120, 20), 'type': 'platform'})
         element["platform"].append([delete[-1][0], delete[-1][1]])
         delete.pop(-1)
+        press_del = True
     elif not(keys[pygame.K_z]) and press_del:
         press_del = False
 
