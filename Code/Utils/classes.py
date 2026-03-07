@@ -1,3 +1,5 @@
+# Création d'une classe pour contenir toutes les variables qui sont ultilisés par le moteur physique du jeu
+
 class MapClass:
     def __init__(self, friction, vitesse_max, gravite, acceleration, element, screen, joueur):
         self.keys = []

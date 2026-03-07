@@ -1,5 +1,7 @@
 import pygame
 
+#Fonction qui gere les animations du sprite
+
 def player_animation(map):
     if map.d_save == 1:
         side = "player_right"

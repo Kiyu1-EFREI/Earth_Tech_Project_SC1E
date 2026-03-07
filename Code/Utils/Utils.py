@@ -1,13 +1,12 @@
 from .animation import *
 import pygame
+# Fonction pour faire apparaître les plateformes sur l'écran
 
 def draw_element(screen, element, classe, bg = '0'): # element = [{'rect': <rect(0, 700, 1300, 30)>, 'type': 'wall'}, {'rect': <rect(-10, 0, 10, 720)>, 'type': 'wall'}]
     if bg != '0':
         screen.blit(bg, (0, 0))
-
     else:
         screen.fill((30, 30, 30))
-
 
     for el in element:
         if el["type"] == "platform":
@@ -21,9 +20,10 @@ def draw_element(screen, element, classe, bg = '0'): # element = [{'rect': <rect
             pygame.draw.rect(screen, (0, 255, 100), el["rect"])
             player_animation(classe)
 
+# Fonction pour ajouter a la liste des éléments le joueur et les plateformes
+
 def create_element(element): # element = "player" : [[160, 380, 50, 50]], "wall" : [[0, 70, 140, 3], [-1, 0, 1, 72]]
     rect = []
-
     for key, val in element.items():
         for i in val:
             if key != 'platform':
