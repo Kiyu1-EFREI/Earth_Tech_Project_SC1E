@@ -33,4 +33,11 @@ def create_element(element): # element = "player" : [[160, 380, 50, 50]], "wall"
 
     return rect
 
-
+def interagir(events, joueur_rect, objets_interactifs):
+    touche_e_pressee = False
+    for event in events:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+            touche_e_pressee = True 
+            break
+    if not touche_e_pressee:
+        return 0
