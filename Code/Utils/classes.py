@@ -25,6 +25,11 @@ class MapClass:
         self.oiseau = []
         self.fire = []
         self.press_e = False
+        self.flammes = []
+        self.fumee = []
+        self.temps_restant = []
+        self.score_max = 0
+        self.max_flammes = 0
 
 # Class pour cree des element, avec ou sans animation, qui vont etre ou pas, afficher a l'ecran
 class ObjetClass:

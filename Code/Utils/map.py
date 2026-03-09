@@ -1,5 +1,6 @@
 from Code.Niveaux.Niveau_1 import*
 from Code.Niveaux.Niveau_2 import*
+from Code.Niveaux.Niveau_3 import*
 from .Utils import*
 from .classes import*
 
@@ -28,12 +29,15 @@ def utilisation(map, e):
     if map.joueur.rect.colliderect(e.rect):
         if e.type == "water" and map.niveau != 3 and map.water < 100:
             gestion_eau(map, 2)
+        elif e.type == "water_source" and map.niveau == 3 and map.water < 100:
+            gestion_eau(map, 20)
 
         if map.niveau == 1:
             utilisation_lvl_1(map, e)
         elif map.niveau == 2:
             utilisation_lvl_2(map, e)
-        # utilisation_lvl_3(map)
+        elif map.niveau == 3:  # Ajout du niveau 3
+            utilisation_lvl_3(map, e)
         # utilisation_lvl_4(map)
 
 
@@ -103,6 +107,12 @@ def run_map(map):
     elif map.niveau == 2:
         generation_fire(map)
         gestion_score_bare(map, (map.score * 100)/15)
+    elif map.niveau == 3:
+        animer_flamme(map, 0.5)
+        animer_fumee(map)
+        update_timer_lvl_3(map)
+        if map.score_max > 0:
+            gestion_score_bare(map, (map.score * 100)/map.score_max)
 
 
 
