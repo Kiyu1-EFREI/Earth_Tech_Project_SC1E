@@ -143,20 +143,20 @@ def init_map(niveau, screen):
 
     map.joueur.anim_speed = 0.2
     map.player_img[1][True] = [
-        pygame.transform.scale(pygame.image.load("./Asset/player/player_right_1.png"), (50, 50)),
-        pygame.transform.scale(pygame.image.load("./Asset/player/player_right_2.png"), (50, 50)),
-        pygame.transform.scale(pygame.image.load("./Asset/player/player_right_3.png"), (50, 50)),
-        pygame.transform.scale(pygame.image.load("./Asset/player/player_right_4.png"), (50, 50))
+        pygame.transform.scale(pygame.image.load("./Asset/player/player_right_1.png").convert_alpha(), (50, 50)),
+        pygame.transform.scale(pygame.image.load("./Asset/player/player_right_2.png").convert_alpha(), (50, 50)),
+        pygame.transform.scale(pygame.image.load("./Asset/player/player_right_3.png").convert_alpha(), (50, 50)),
+        pygame.transform.scale(pygame.image.load("./Asset/player/player_right_4.png").convert_alpha(), (50, 50))
     ]
     map.player_img[-1][True] = [
-        pygame.transform.scale(pygame.image.load("./Asset/player/player_left_1.png"), (50, 50)),
-        pygame.transform.scale(pygame.image.load("./Asset/player/player_left_2.png"), (50, 50)),
-        pygame.transform.scale(pygame.image.load("./Asset/player/player_left_3.png"), (50, 50)),
-        pygame.transform.scale(pygame.image.load("./Asset/player/player_left_4.png"), (50, 50))
+        pygame.transform.scale(pygame.image.load("./Asset/player/player_left_1.png").convert_alpha(), (50, 50)),
+        pygame.transform.scale(pygame.image.load("./Asset/player/player_left_2.png").convert_alpha(), (50, 50)),
+        pygame.transform.scale(pygame.image.load("./Asset/player/player_left_3.png").convert_alpha(), (50, 50)),
+        pygame.transform.scale(pygame.image.load("./Asset/player/player_left_4.png").convert_alpha(), (50, 50))
     ]
 
-    map.player_img[1][False] = [pygame.transform.scale(pygame.image.load("./Asset/player/player_right_jump.png"), (50, 50))]
-    map.player_img[-1][False] = [pygame.transform.scale(pygame.image.load("./Asset/player/player_left_jump.png"), (50, 50))]
+    map.player_img[1][False] = [pygame.transform.scale(pygame.image.load("./Asset/player/player_right_jump.png").convert_alpha(), (50, 50))]
+    map.player_img[-1][False] = [pygame.transform.scale(pygame.image.load("./Asset/player/player_left_jump.png").convert_alpha(), (50, 50))]
 
     map.water_tank = ObjetClass(pygame.Rect(100, 540, 90, 0), "water_tank")
     map.water_tank.color = (50, 150, 255)

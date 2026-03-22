@@ -8,7 +8,7 @@ def create_fire(map, x, y):
     anim_speed = uniform(0.16,0.22)
     frame = []
     for i in range(1,11):
-        frame.append(pygame.transform.scale(pygame.image.load("./Asset/maps/fire_"+str(i)+".png").convert_alpha(), (30, 35)))
+        frame.append(pygame.transform.scale(pygame.image.load("./Asset/maps/fire_"+str(i)+".png").convert_alpha(), (40, 45)))
 
     fire = ObjetClass(pygame.Rect(x * 10, y * 10, 30, 35), "fire")
     fire.frame = frame
@@ -56,7 +56,7 @@ def init_lvl_2(map):
     create_fire(map, 111, 18)
     create_fire(map, 94, 55)
     create_fire(map, 38, 10)
-    map.aleatoire.s = 1.5
-    map.aleatoire.min = 1
-    map.aleatoire.max = 2
+    map.aleatoire.s = 2
+    map.aleatoire.min = 2
+    map.aleatoire.max = 4
     map.score = 3
