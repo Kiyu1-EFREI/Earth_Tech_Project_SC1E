@@ -6,7 +6,7 @@ pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((1280, 720))
 
-niveau = 2
+niveau = 1
 if niveau == 1:
     element_lvl = element_lvl_1()
 elif niveau == 2:
