@@ -35,7 +35,7 @@ def create_element(element, niveau = 0, bg = '0'): # element = {"water" : [[160,
                     p_img = 'ciel_platform.png'
                 else:
                     p_img = 'forest_platform.png'
-                rect[-1].frame = [pygame.transform.scale(pygame.image.load("./Asset/maps/" + p_img).convert_alpha(),(120, 20))]
+                rect[-1].frame = [pygame.transform.scale(pygame.image.load("./Asset/maps/" + p_img).convert_alpha(),(130, 60))]
 
             elif key == "dirt_pile":
                 rect[-1].frame = [pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre.png").convert_alpha(),(30, 20)),
