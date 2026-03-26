@@ -66,7 +66,7 @@ def init_lvl_1(map):
     ]
 
     for i in map.oiseau:
-        i.anim_index = 0.2
+        i.anim_speed = 0.15
         for j in range(1,4):
             i.frame.append(pygame.transform.scale(pygame.image.load("./Asset/maps/bird_"+str(j)+".png").convert_alpha(), (40, 40)))
 
