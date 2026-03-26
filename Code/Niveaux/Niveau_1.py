@@ -65,6 +65,11 @@ def init_lvl_1(map):
         ObjetClass(pygame.Rect(1180, 110, 40, 40), "oiseau")
     ]
 
+    for i in map.oiseau:
+        i.anim_index = 0.2
+        for j in range(1,4):
+            i.frame.append(pygame.transform.scale(pygame.image.load("./Asset/maps/bird_"+str(j)+".png").convert_alpha(), (40, 40)))
+
     map.oiseau[0].variable = [60, -10, 110, 300, True] # [centre_x, centre_y, rayon, angle, a_une_seed]
     map.oiseau[1].variable = [620, -60, 180, 60, True]
     map.oiseau[2].variable = [1150, -20, 150, 180, True]
