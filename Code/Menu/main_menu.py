@@ -3,12 +3,13 @@ import pygame
 
 def init_main_menu(police):
     element = [
-        pygame.image.load("Asset/menu/main_menu_background.png").convert_alpha(),
-        [pygame.transform.scale(pygame.image.load("Asset/menu/main_menu_txt.png").convert_alpha(), (600,120)), (340, 130)],
+        ButtonClass(pygame.Rect(0, 0, 1280, 720), "Asset/menu/main_menu_background.png", pygame.font.SysFont(police, 48), None, (100,100,100), 0),
+        ButtonClass(pygame.Rect(340, 130, 600, 120), "Asset/menu/main_menu_txt.png",pygame.font.SysFont(police, 48), None, (100, 100, 100), 0),
         ButtonClass(pygame.Rect(460, 360, 360, 80), "Jouer", pygame.font.SysFont(police, 48), -1),
         ButtonClass(pygame.Rect(460, 470, 360, 80), "Quitter", pygame.font.SysFont(police, 48), 0)
     ]
     return element
+
 
 
 

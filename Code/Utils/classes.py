@@ -60,6 +60,7 @@ class ButtonClass:
     def __init__(self, rect, text, police , action, hover=(100, 100, 100), border_r = 8, color=(70, 130, 180), text_color=(255, 255, 255)):
         self.rect = rect
         self.text = text
+        self.frame = []
         self.police  = police
         self.color = color
         self.hover = hover

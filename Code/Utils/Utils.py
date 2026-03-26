@@ -142,3 +142,30 @@ def draw_botton(screen, element, click, niveau, continue_click):
             txt = botton.police.render(botton.text, True, botton.text_color)
             screen.blit(txt, txt.get_rect(center=botton.rect.center))
     return niveau
+
+
+def resize(elements, new_w, new_h, old_w, old_h):
+    scale_x = new_w / old_w
+    scale_y = new_h / old_h
+    if type(elements) != list:
+        elements = [elements]
+    for el in elements:
+        w = el.rect.width
+        h = el.rect.height
+
+        if w == h:
+            if w * scale_x < h * scale_y:
+                el.rect.width *= scale_x
+                el.rect.height *= scale_x
+            else:
+                el.rect.width *= scale_y
+                el.rect.height *= scale_y
+        else:
+            el.rect.width *= scale_x
+            el.rect.height *= scale_y
+        el.rect.x *= scale_x
+        el.rect.y *= scale_y
+
+        if len(el.frame) > 0:
+            for i in range(len(el.frame)):
+                el.frame[i] = pygame.transform.scale(el.frame[i], (el.rect.width, el.rect.height))

@@ -178,3 +178,10 @@ def init_map(niveau, screen):
         init_lvl_1(map)
 
     return map
+
+# fonction resize map
+def map_resize(map, screen_width, screen_height, old_w, old_h):
+    resize(map.element[1:], screen_width, screen_height, old_w, old_h)
+    resize(map.oiseau, screen_width, screen_height, old_w, old_h)
+    resize(map.fire, screen_width, screen_height, old_w, old_h)
+    resize(map.joueur, screen_width, screen_height, old_w, old_h)
