@@ -8,7 +8,7 @@ def run_menu(screen, element, niveau, click, continue_click):
     niveau = draw_botton(screen, element, click, niveau, continue_click)
     return niveau
 
-
+police = "Arial"
 # fonction qui permet d'initialiser les menu
 def init_menu(menu, police):
     element = []
