@@ -1,6 +1,7 @@
 from Utils.map import*
 from Menu.menu import*
 import pygame
+from Code.Niveaux.Niveau_4 import init_lvl_4
 
 # structure pygame
 pygame.init()
@@ -25,6 +26,9 @@ if niveau > 0:
         element_lvl = {}
     elif niveau == 3:
         element_lvl = element_lvl_3()
+    elif niveau ==4:
+        level4 = init_lvl_4(screen)
+        element_lvl = level4.element
     else:
         element_lvl = element_lvl_1()
 
@@ -37,7 +41,10 @@ else:
 # Boucle principale de Pygame
 run = True
 while run:
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    click = False
+
+    for event in events:
         if event.type == pygame.QUIT:
             run = False
         elif event.type == pygame.VIDEORESIZE:
@@ -48,34 +55,40 @@ while run:
             old_w = new_width
             old_h = new_height
 
-
-
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             click = True
-        else:
-            click = False
 
+    if niveau == 4 and level4 is not None:
+        level4.handle_events(events)
+        dt = clock.tick(60) / 1000.0
+        level4.update(dt)
+        level4.draw()
 
-    # run menu ou niveau
-    if niveau > 0 :
+        if level4.game_over or level4.level_finished:
+            run = False
+
+    elif niveau > 0:
         map.click = click
         run_map(map)
         new_niveau = map.niveau
     else:
         new_niveau = run_menu(screen, element, niveau, click, continue_click)
 
-    # initialisation de la map ou niveau lors d'un changement
-    if niveau != new_niveau:
+    if niveau != 4 and niveau != new_niveau:
         niveau = new_niveau
         if niveau > 0:
-            map = init_map(niveau, screen)
-            map.screen = screen
-            map_resize(map, screen.get_width(), screen.get_height(), 1280, 720)
+            if niveau == 4:
+                level4 = init_lvl_4(screen)
+            else:
+                map = init_map(niveau, screen)
+                map.screen = screen
+                map_resize(map, screen.get_width(), screen.get_height(), 1280, 720)
         elif niveau == 0:
             run = False
         else:
             element = init_menu(niveau, police)
             resize(element, screen.get_width(), screen.get_height(), 1280, 720)
+
     continue_click = click
     pygame.display.flip()
     clock.tick(60)

@@ -1,6 +1,7 @@
 from Code.Niveaux.Niveau_1 import*
 from Code.Niveaux.Niveau_2 import*
 from Code.Niveaux.Niveau_3 import*
+from Code.Niveaux.Niveau_4 import *
 from .Utils import*
 from .classes import*
 
@@ -84,6 +85,14 @@ def mouvement(map):
 
 # fonction qui permet de faire tourner la map
 def run_map(map):
+    if getattr(map, "niveau", None) == 4 and hasattr(map, "update") and hasattr(map, "draw"):
+        events = pygame.event.get()
+        map.handle_events(events)
+        dt = pygame.time.Clock().tick(60) / 1000.0
+        map.update(dt)
+        map.draw()
+        return map.niveau
+
     map.keys = pygame.key.get_pressed()
     map.aleatoire.time += 1
 
@@ -111,6 +120,7 @@ def run_map(map):
     elif map.niveau == 3:
         #etat = update_lvl_3(map)
         gestion_score_bare(map, (map.score * 100) / 10)
+    return map.niveau
         
 
 
@@ -175,7 +185,7 @@ def init_map(niveau, screen):
     elif niveau == 3:
         init_lvl_1(map)
     elif niveau == 4:
-        init_lvl_1(map)
+        init_lvl_4(screen)
 
     return map
 

@@ -1,6 +1,6 @@
 import pygame
 import random
-
+from Code.Utils.classes import Player
 # Constantes de jeu
 GRAVITY = 800  # Valeur de 'g' dans l'équation
 SCREEN_WIDTH = 1280
@@ -54,6 +54,13 @@ class MonstrePollution(pygame.sprite.Sprite):
 
         self.clouds = pygame.sprite.Group()
 
+        self.max_hp = 5
+        self.hp = self.max_hp
+        self.vulnerable = False
+        self.alive = True
+
+        self.font = pygame.font.Font(None, 36)
+
         # cadence de tir
         self.fire_interval = 1.2
         self.fire_timer = 0.0
@@ -67,17 +74,9 @@ class MonstrePollution(pygame.sprite.Sprite):
         Choisit un point approximatif vers lequel tirer.
         On vise généralement autour du centre du joueur avec un léger décalage.
         """
-        player_x = player.rect.centerx
-        player_y = player.rect.centery
-
-        # On ajoute une petite imprécision pour rendre le boss plus organique
         offset_x = random.randint(-50, 50)
         offset_y = random.randint(-20, 30)
-
-        target_x = player_x + offset_x
-        target_y = player_y + offset_y
-
-        return target_x, target_y
+        return player.rect.centerx + offset_x, player.rect.centery + offset_y
 
     def launch_cloud(self, origin_x=None, origin_y=None, player=None):
         """
@@ -129,7 +128,9 @@ class MonstrePollution(pygame.sprite.Sprite):
             self.launch_cloud(player=player)
 
         self.clouds.update(dt)
-        self._check_cloud_hits(player)
+
+        if player is not None:
+            self._check_cloud_hits(player)
 
     def _check_cloud_hits(self, player):
         """
@@ -137,7 +138,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         Si collision, le joueur perd une vie.
         """
         hits = pygame.sprite.spritecollide(player, self.clouds, True)
-        for hit in hits:
+        for _hit in hits:
             player.lose_life()
 
     def draw_hp_bar(self, surface):
@@ -205,3 +206,67 @@ class MonstrePollution(pygame.sprite.Sprite):
         """
         self.alive = False
         self.clouds.empty()
+
+class Level4:
+    def __init__(self, screen):
+        self.screen = screen
+        self.player = Player(120, SCREEN_HEIGHT - 140)
+        self.boss = MonstrePollution(1050, 250)
+        self.level_finished = False
+        self.victory = False
+        self.game_over = False
+        self.font = pygame.font.Font(None, 72)
+
+    def handle_events(self, events):
+        for event in events:
+            if event.type == pygame.QUIT:
+                self.game_over = True
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+                self.boss.become_vulnerable()
+                self.boss.take_damage(1)
+
+    def update(self, dt):
+        keys = pygame.key.get_pressed()
+
+        speed = 300
+        if keys[pygame.K_LEFT] or keys[pygame.K_q]:
+            self.player.rect.x -= int(speed * dt)
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            self.player.rect.x += int(speed * dt)
+        if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+            self.player.rect.y -= int(speed * dt)
+
+        self.player.rect.x = max(0, min(SCREEN_WIDTH - self.player.rect.width, self.player.rect.x))
+        self.player.rect.y = max(0, min(SCREEN_HEIGHT - self.player.rect.height, self.player.rect.y))
+
+        self.boss.update(dt, self.player)
+
+        if self.player.is_dead():
+            self.game_over = True
+
+        if not self.boss.alive:
+            self.level_finished = True
+            self.victory = True
+
+    def draw(self):
+        self.screen.fill((120, 200, 255))
+        pygame.draw.rect(self.screen, (90, 160, 80), (0, SCREEN_HEIGHT - 80, SCREEN_WIDTH, 80))
+
+        self.screen.blit(self.player.image, self.player.rect)
+        self.player.draw_hp(self.screen)
+        self.boss.draw(self.screen)
+
+        if self.game_over and not self.victory:
+            text = self.font.render("GAME OVER", True, (255, 50, 50))
+            self.screen.blit(text, text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)))
+
+        if self.victory:
+            text = self.font.render("VICTOIRE !", True, (50, 255, 50))
+            self.screen.blit(text, text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)))
+
+
+def init_lvl_4(screen):
+    return Level4(screen)
+
+
