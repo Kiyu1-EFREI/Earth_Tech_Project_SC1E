@@ -34,6 +34,11 @@ def init_lvl_3(map):
     }
     map.poubelles = []
     map.joueur.inventory = {"plastique": 0, "verre": 0, "papier": 0}
+    map.aleatoire.nb_s = 2
+    map.aleatoire.min = 2
+    map.aleatoire.max = 4
+    map.pollution_bare = ObjetClass(pygame.Rect(10, 40, 200, 25), "pollution_bare")
+    map.pollution_bare.color = (255, 0, 0)
     for e in map.element:
         if e.type in ["poubelle_plastique", "poubelle_verre", "poubelle_papier"]:
             map.poubelles.append(e)

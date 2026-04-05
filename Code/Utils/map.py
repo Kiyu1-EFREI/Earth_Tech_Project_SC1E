@@ -96,7 +96,10 @@ def run_map(map):
         map.joueur.anim_index = 0.0
 
     map.joueur.frame = map.player_img[map.d_save][map.en_contact]
-    draw_element(map.screen, map.element + map.oiseau + map.fire + [map.water_tank, map.score_bare, map.joueur])
+    draw_list = map.element + map.oiseau + map.fire + map.dechets + [map.water_tank, map.score_bare, map.joueur]
+    if hasattr(map, 'pollution_bare'):
+        draw_list.append(map.pollution_bare)
+    draw_element(map.screen, draw_list)
 
     if map.keys[pygame.K_e]:
         map.press_e = True
@@ -109,7 +112,8 @@ def run_map(map):
         generation_fire(map)
         gestion_score_bare(map, (map.score * 100)/15)
     elif map.niveau == 3:
-        #etat = update_lvl_3(map)
+        update_lvl_3(map)
+        gestion_pollution_bare(map)
         gestion_score_bare(map, (map.score * 100) / 10)
         
 
@@ -173,7 +177,7 @@ def init_map(niveau, screen):
     elif niveau == 2:
         init_lvl_2(map)
     elif niveau == 3:
-        init_lvl_1(map)
+        init_lvl_3(map)
     elif niveau == 4:
         init_lvl_1(map)
 
