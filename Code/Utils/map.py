@@ -49,6 +49,17 @@ def interaction(map):
         if map.keys[pygame.K_e]:
             utilisation(map, e)
 
+# fonction pour afficher l'inventaire du joueur dans le niveau 3
+def draw_inventory(map):
+    if map.niveau != 3:
+        return
+    if not hasattr(map, "font"):
+        map.font = pygame.font.SysFont("Arial", 20)
+    inventory = getattr(map.joueur, "inventory", {})
+    text = f"Inventaire : plastique={inventory.get('plastique', 0)} verre={inventory.get('verre', 0)} papier={inventory.get('papier', 0)}"
+    surface = map.font.render(text, True, (255, 255, 255))
+    map.screen.blit(surface, (10, 40))
+
 # fonction pour gerer touts les mouvements du joueur
 def mouvement(map):
     # changement de coordoné
@@ -96,7 +107,11 @@ def run_map(map):
         map.joueur.anim_index = 0.0
 
     map.joueur.frame = map.player_img[map.d_save][map.en_contact]
-    draw_element(map.screen, map.element + map.oiseau + map.fire + [map.water_tank, map.score_bare, map.joueur])
+    elements_to_draw = map.element + map.dechets + map.oiseau + map.fire + [map.water_tank, map.score_bare, map.joueur]
+    if map.niveau == 3 and hasattr(map, 'pollution_bare'):
+        elements_to_draw.append(map.pollution_bare)
+    draw_element(map.screen, elements_to_draw)
+    draw_inventory(map)
 
     if map.keys[pygame.K_e]:
         map.press_e = True
@@ -109,8 +124,9 @@ def run_map(map):
         generation_fire(map)
         gestion_score_bare(map, (map.score * 100)/15)
     elif map.niveau == 3:
-        #etat = update_lvl_3(map)
+        update_lvl_3(map)
         gestion_score_bare(map, (map.score * 100) / 10)
+        gestion_pollution_bare(map)
         
 
 
@@ -164,6 +180,9 @@ def init_map(niveau, screen):
     map.score_bare = ObjetClass(pygame.Rect(10, 10, 0, 25), "score_bare")
     map.score_bare.color = (0, 0, 0)
     if niveau == 3:
+        map.pollution_bare = ObjetClass(pygame.Rect(10, 35, 0, 25), "pollution_bare")
+        map.pollution_bare.color = (255, 0, 0)  # Rouge pour la pollution
+    if niveau == 3:
         map.water_tank.visible = False
     elif niveau == 4 or niveau == 1:
         map.score_bare.visible = False
@@ -173,7 +192,7 @@ def init_map(niveau, screen):
     elif niveau == 2:
         init_lvl_2(map)
     elif niveau == 3:
-        init_lvl_1(map)
+        init_lvl_3(map)
     elif niveau == 4:
         init_lvl_1(map)
 
