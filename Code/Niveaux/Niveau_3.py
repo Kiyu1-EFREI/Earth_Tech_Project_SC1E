@@ -87,5 +87,4 @@ def update_lvl_3(map):
     gestion_pollution(map)
 
 def gestion_pollution(map):
-    # Augmente la pollution lentement au cours du temps
-    map.pollution = min(100, map.pollution + 0.1)  # Augmente de 0.1 par frame, max 100
+    map.pollution = min(100, map.pollution + 0.1)
