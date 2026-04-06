@@ -204,15 +204,32 @@ def draw_popup(screen, map):
         # Afficher la popup sur l'écran
         screen.blit(popup_surface, (popup_x, popup_y))
 
-        # Texte du message
-        message = ("1- Le plastique éternel : Saviez-vous qu'une bouteille en plastique met environ 450 ans "
-                   "à se décomposer ?\n Elle ne disparaît jamais vraiment, elle se transforme en microplastiques.\n\n"
-                   "2- L'ennemi invisible : 80% des déchets marins proviennent de la terre ferme. "
-                   "Chaque geste compte, même loin des côtes.\n\n"
-                   "3- Le mégot fatal : Un seul mégot de cigarette peut polluer jusqu'à 1 000 litres d'eau.")
+        # Texte du message selon le niveau
+        if map.niveau == 1:
+            message = ("Le plastique éternel : Saviez-vous qu'une bouteille en plastique met environ 450 ans "
+                       "à se décomposer ? Elle ne disparaît jamais vraiment, elle se transforme en microplastiques.\n\n"
+                       "L'ennemi invisible : 80% des déchets marins proviennent de la terre ferme. "
+                       "Chaque geste compte, même loin des côtes.\n\n"
+                       "Le mégot fatal : Un seul mégot de cigarette peut polluer jusqu'à 1 000 litres d'eau.")
+            next_level_text = "Passage au niveau 2 dans {seconds_left}s"
+            next_level = 2
+        elif map.niveau == 2:
+            message = ("L'énergie la plus propre : C'est celle que l'on ne consomme pas. Éteindre les lumières inutiles "
+                       "n'est pas un petit geste, c'est une nécessité systémique.\n\n"
+                       "L'or bleu : Moins de 1% de l'eau sur Terre est douce et accessible. Dans ce jeu comme dans la réalité, "
+                       "chaque goutte est précieuse.\n\n"
+                       "Numérique polluant : Si Internet était un pays, il serait le 3ème plus gros consommateur d'électricité au monde.")
+            next_level_text = "Passage au niveau 3 dans {seconds_left}s"
+            next_level = 3
+        else:
+            message = "Message par défaut"
+            next_level_text = "Passage au niveau suivant dans {seconds_left}s"
+            next_level = map.niveau + 1
+
+
 
         # Diviser le texte en plusieurs lignes pour l'afficher
-        font = pygame.font.Font(None, 18)
+        font = pygame.font.Font(None, 25)
         lines = message.split('\n')
         y_offset = popup_y + 30
 
@@ -227,7 +244,7 @@ def draw_popup(screen, map):
         # Afficher le compte à rebours
         seconds_left = max(0, (map.popup_timer // 60))
         countdown_font = pygame.font.Font(None, 24)
-        countdown_text = countdown_font.render(f"Passage au niveau 2 dans {seconds_left}s", True, (255, 200, 100))
+        countdown_text = countdown_font.render(next_level_text.format(seconds_left=seconds_left), True, (255, 200, 100))
         screen.blit(countdown_text,
                     (popup_x + popup_width // 2 - countdown_text.get_width() // 2, popup_y + popup_height - 40))
 
@@ -237,4 +254,4 @@ def draw_popup(screen, map):
         # Si le timer atteint 0, changer de niveau
         if map.popup_timer <= 0:
             map.popup_active = False
-            map.niveau = 2
+            map.niveau = next_level

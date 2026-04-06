@@ -29,7 +29,8 @@ def utilisation_lvl_2(map, e):
 
             # Vérifier si le joueur a gagné
             if map.level_2_extinguished >= 20:
-                map.niveau = 3
+                map.popup_active = True
+                map.popup_timer = 1000
 
 # permet de gerer les feu
 def generation_fire(map):
