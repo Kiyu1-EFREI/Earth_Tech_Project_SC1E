@@ -5,7 +5,8 @@ from Code.Utils.classes import Player
 GRAVITY = 800  # Valeur de 'g' dans l'équation
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
-
+GROUND_HEIGHT = 80
+GROUND_Y = SCREEN_HEIGHT - GROUND_HEIGHT
 
 class PollutionCloud(pygame.sprite.Sprite):
     def __init__(self, x, y, vx, vy0):
@@ -210,12 +211,23 @@ class MonstrePollution(pygame.sprite.Sprite):
 class Level4:
     def __init__(self, screen):
         self.screen = screen
-        self.player = Player(120, SCREEN_HEIGHT - 140)
+        self.background = pygame.transform.scale(
+            pygame.image.load("./Asset/maps/forest_background.png").convert(),
+            (SCREEN_WIDTH, SCREEN_HEIGHT)
+        )
+        self.player = Player(120, GROUND_Y - 60)
+        self.player.vy = 0
+        self.player.on_ground = True
+
         self.boss = MonstrePollution(1050, 250)
         self.level_finished = False
         self.victory = False
         self.game_over = False
         self.font = pygame.font.Font(None, 72)
+
+        self.player_speed = 300
+        self.jump_speed = 430
+        self.player_vy = 0.0
 
     def handle_events(self, events):
         for event in events:
