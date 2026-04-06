@@ -213,11 +213,14 @@ class MonstrePollution(pygame.sprite.Sprite):
 
 class Level4:
     def __init__(self, screen):
+        from Code.Utils.map import init_map
+
         self.screen = screen
-        self.background = pygame.transform.scale(
-            pygame.image.load("./Asset/maps/forest_background.png").convert(),
-            (SCREEN_WIDTH, SCREEN_HEIGHT)
-        )
+
+        # Réutilise la base de carte du projet, comme pour le niveau 1
+        self.base_map = init_map(4, screen)
+        self.background_elements = self.base_map.element
+
         self.player = Player(120, GROUND_Y - 60)
         self.player.vy = 0
         self.player.on_ground = True

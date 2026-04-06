@@ -1,6 +1,7 @@
 from Code.Niveaux.Niveau_1 import*
 from Code.Niveaux.Niveau_2 import*
 from Code.Niveaux.Niveau_3 import*
+from Code.Niveaux.Niveau_4 import init_lvl_4
 from .Utils import*
 from .classes import*
 
@@ -38,7 +39,9 @@ def utilisation(map, e):
             utilisation_lvl_2(map, e)
         elif map.niveau == 3:
             utilisation_lvl_3(map, e)
-        # utilisation_lvl_4(map)
+        elif map.niveau == 4:
+            # Niveau 4 gère sa propre logique dans Code/Niveaux/Niveau_4.py
+            pass
 
 
 # Fonction qui rassemble la gest des colision et les interaction pour eviter des boucle similaire
@@ -128,6 +131,8 @@ def run_map(map):
         update_lvl_3(map)
         gestion_pollution_bare(map)
         gestion_score_bare(map, (map.score * 100) / 10)
+    elif map.niveau == 4:
+        pass
         
 
 
@@ -141,6 +146,8 @@ def init_map(niveau, screen):
         element_lvl = {}
     elif niveau == 3:
         element_lvl = element_lvl_3()
+    elif niveau == 4:
+        element_lvl = element_lvl_1()
     else:
         element_lvl = element_lvl_1()
 
@@ -193,6 +200,7 @@ def init_map(niveau, screen):
         init_lvl_3(map)
     elif niveau == 4:
         init_lvl_1(map)
+        map.background_elements = map.element
 
     return map
 
