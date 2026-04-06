@@ -206,7 +206,7 @@ def draw_popup(screen, map):
 
         # Texte du message
         message = ("Le plastique éternel : Saviez-vous qu'une bouteille en plastique met environ 450 ans "
-                   "à se décomposer ? Elle ne disparaît jamais vraiment, elle se transforme en microplastiques.\n\n"
+                   "à se décomposer ?\n Elle ne disparaît jamais vraiment, elle se transforme en microplastiques.\n\n"
                    "L'ennemi invisible : 80% des déchets marins proviennent de la terre ferme. "
                    "Chaque geste compte, même loin des côtes.\n\n"
                    "Le mégot fatal : Un seul mégot de cigarette peut polluer jusqu'à 1 000 litres d'eau.")

@@ -25,9 +25,16 @@ def utilisation_lvl_2(map, e):
         if e.variable <= 0:
             map.fire.remove(e)
             map.score -= 1
+            map.level_2_extinguished += 1
+
+            # Vérifier si le joueur a gagné
+            if map.level_2_extinguished >= 20:
+                map.niveau = 3
 
 # permet de gerer les feu
 def generation_fire(map):
+    if map.level_2_extinguished >= 20:
+        return
     if len(map.fire) <= 1:
         nb_fire = 1
     elif aleatoire(map.aleatoire):
@@ -60,3 +67,4 @@ def init_lvl_2(map):
     map.aleatoire.min = 2
     map.aleatoire.max = 4
     map.score = 3
+    map.level_2_extinguished = 0
