@@ -46,6 +46,7 @@ class MapClass:
         self.couleurs_dechets = {}
         self.popup_active = False
         self.popup_timer = 0
+        self.level_2_extinguished = 0
 
 
 # Class pour cree des element, avec ou sans animation, qui vont etre ou pas, afficher a l'ecran

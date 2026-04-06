@@ -205,11 +205,11 @@ def draw_popup(screen, map):
         screen.blit(popup_surface, (popup_x, popup_y))
 
         # Texte du message
-        message = ("Le plastique éternel : Saviez-vous qu'une bouteille en plastique met environ 450 ans "
+        message = ("1- Le plastique éternel : Saviez-vous qu'une bouteille en plastique met environ 450 ans "
                    "à se décomposer ?\n Elle ne disparaît jamais vraiment, elle se transforme en microplastiques.\n\n"
-                   "L'ennemi invisible : 80% des déchets marins proviennent de la terre ferme. "
+                   "2- L'ennemi invisible : 80% des déchets marins proviennent de la terre ferme. "
                    "Chaque geste compte, même loin des côtes.\n\n"
-                   "Le mégot fatal : Un seul mégot de cigarette peut polluer jusqu'à 1 000 litres d'eau.")
+                   "3- Le mégot fatal : Un seul mégot de cigarette peut polluer jusqu'à 1 000 litres d'eau.")
 
         # Diviser le texte en plusieurs lignes pour l'afficher
         font = pygame.font.Font(None, 18)
