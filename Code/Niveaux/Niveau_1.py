@@ -17,14 +17,10 @@ def utilisation_lvl_1(map, e):
         if e.anim_index == 0 and map.seed:
             map.seed = False
             e.anim_index = 1
-            e.rect.y -= 10
-            e.rect.height += 10
 
         # permet de faire grandir la graine
         elif e.variable >= 100 and e.anim_index == 1 :
             e.anim_index = 2
-            e.rect.y -= 10
-            e.rect.height += 10
             map.score += 1
 
     elif e.type == "oiseau" and e.variable[4] and map.seed == False and map.press_e == False:
