@@ -107,12 +107,10 @@ def run_map(map):
         text = font.render(score_text, True, (255, 255, 255))
         map.screen.blit(text, (10, 70))
 
-        # Display waste images for inventory
-        x_pos = 10
-        y_pos = 100
         for type_dechet, count in map.joueur.inventory.items():
             if count > 0:
-                img = pygame.transform.scale(pygame.image.load(f"./Asset/maps/dechet_{type_dechet}.png").convert_alpha(), (30, 30))
+                img_path = f"./Asset/maps/dechet_{type_dechet}.png"
+                img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (30, 30))
                 map.screen.blit(img, (x_pos, y_pos))
                 x_pos += 40
 

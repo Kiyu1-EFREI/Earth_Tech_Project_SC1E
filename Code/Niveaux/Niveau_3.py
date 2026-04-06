@@ -82,7 +82,7 @@ def generer_dechet(map):
             dechet = ObjetClass(pygame.Rect(x, y, 20, 20), "dechet")
             dechet.type_dechet = type_dechet
             dechet.color = couleur
-            dechet.frame = [pygame.transform.scale(pygame.image.load(f"./Asset/maps/dechet_{type_dechet}.png").convert_alpha(), (20, 20))]
+            dechet.frame = [pygame.transform.scale(pygame.image.load(f"./Asset/maps/dechet_{type_dechet}.png" if type_dechet != "verre" else "./Asset/maps/verre2.png").convert_alpha(), (20, 20))]
             dechet.visible = True
             map.dechets.append(dechet)
 
