@@ -101,6 +101,21 @@ def run_map(map):
         draw_list.append(map.pollution_bare)
     draw_element(map.screen, draw_list)
 
+    if map.niveau == 3:
+        font = pygame.font.Font(None, 36)
+        score_text = f"Déchets déposés: {map.score}"
+        text = font.render(score_text, True, (255, 255, 255))
+        map.screen.blit(text, (10, 70))
+
+        # Display waste images for inventory
+        x_pos = 10
+        y_pos = 100
+        for type_dechet, count in map.joueur.inventory.items():
+            if count > 0:
+                img = pygame.transform.scale(pygame.image.load(f"./Asset/maps/dechet_{type_dechet}.png").convert_alpha(), (30, 30))
+                map.screen.blit(img, (x_pos, y_pos))
+                x_pos += 40
+
     if map.keys[pygame.K_e]:
         map.press_e = True
     else:

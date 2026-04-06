@@ -42,6 +42,15 @@ def create_element(element, niveau = 0, bg = '0'): # element = {"water" : [[160,
                                   pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre_haut.png").convert_alpha(),(30, 30)),
                                   pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre_plant.png").convert_alpha(),(30, 40))]
 
+            elif key == "poubelle_plastique":
+                rect[-1].frame = [pygame.transform.scale(pygame.image.load("./Asset/maps/poubelle_plastique.png").convert_alpha(), (40, 50))]
+
+            elif key == "poubelle_verre":
+                rect[-1].frame = [pygame.transform.scale(pygame.image.load("./Asset/maps/poubelle_verre.png").convert_alpha(), (40, 50))]
+
+            elif key == "poubelle_reste":
+                rect[-1].frame = [pygame.transform.scale(pygame.image.load("./Asset/maps/poubelle_reste.png").convert_alpha(), (40, 50))]
+
             elif key == "water":
                 rect[-1].color = (0, 0, 255)
 
