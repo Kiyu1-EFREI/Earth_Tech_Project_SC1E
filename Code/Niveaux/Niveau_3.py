@@ -94,7 +94,7 @@ def update_lvl_3(map):
         generer_dechet(map)
     gestion_pollution(map)
     if map.score >= 20:
-        map.niveau = 0  # Win, return to menu
+        map.niveau = 0
 
 def gestion_pollution(map):
     map.pollution = min(100, map.pollution + 0.1)
