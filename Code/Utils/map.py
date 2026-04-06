@@ -100,10 +100,18 @@ def run_map(map):
         map.joueur.anim_index = 0.0
 
     map.joueur.frame = map.player_img[map.d_save][map.en_contact]
-    draw_list = map.element + map.oiseau + map.fire + map.dechets + [map.water_tank, map.score_bare, map.joueur]
+    draw_list = map.element + map.oiseau + map.fire + map.dechets + [map.water_tube, map.score_bare, map.joueur]
     if hasattr(map, 'pollution_bare'):
         draw_list.append(map.pollution_bare)
     draw_element(map.screen, draw_list)
+
+    if map.niveau == 1 and getattr(map, 'seed_box', None) is not None:
+        pygame.draw.rect(map.screen, (30, 30, 30), map.seed_box)
+        pygame.draw.rect(map.screen, (255, 255, 255), map.seed_box, 3, border_radius=8)
+        if map.seed:
+            cx, cy = map.seed_box.center
+            pygame.draw.circle(map.screen, (140, 90, 30), (cx, cy), 14)
+            pygame.draw.circle(map.screen, (160, 110, 55), (cx, cy + 2), 10)
 
     # Afficher le popup si actif
     draw_popup(map.screen, map)
@@ -195,14 +203,24 @@ def init_map(niveau, screen):
     map.player_img[1][False] = [pygame.transform.scale(pygame.image.load("./Asset/player/player_right_jump.png").convert_alpha(), (50, 50))]
     map.player_img[-1][False] = [pygame.transform.scale(pygame.image.load("./Asset/player/player_left_jump.png").convert_alpha(), (50, 50))]
 
-    map.water_tank = ObjetClass(pygame.Rect(100, 540, 90, 0), "water_tank")
-    map.water_tank.color = (50, 150, 255)
+    map.water_tube = ObjetClass(pygame.Rect(15, 530, 65, 120), "water_tube")
+    map.water_tube.color = (255, 255, 255)
+    map.water_tube.variable = 0
 
     map.score_bare = ObjetClass(pygame.Rect(10, 10, 0, 25), "score_bare")
     map.score_bare.color = (0, 0, 0)
+
+    if niveau == 1:
+        map.seed_box = pygame.Rect(15, 660, 50, 50)
+    else:
+        map.seed_box = None
+
     if niveau == 3:
         map.water_tank.visible = False
-    elif niveau == 4 or niveau == 1:
+    elif niveau == 4:
+        map.water_tank.visible = False
+        map.water_tube.visible = False
+    elif niveau == 1:
         map.score_bare.visible = False
 
     if niveau == 1:

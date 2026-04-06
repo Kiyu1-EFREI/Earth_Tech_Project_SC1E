@@ -10,6 +10,23 @@ def draw_element(screen, element): # element -> list d'objet de la class ObjetCl
             if el.type == "background":
                 if len(el.frame) > 0:
                     screen.blit(el.frame[0], (0, 0))
+            elif el.type == "water_tube":
+                fill_ratio = getattr(el, 'variable', 0) / 100
+                fill_ratio = max(0, min(fill_ratio, 1))
+                inner_padding = 4
+                inner_width = max(0, el.rect.width - inner_padding * 2)
+                inner_height = max(0, int((el.rect.height - inner_padding * 2) * fill_ratio))
+                inner_x = el.rect.x + inner_padding
+                inner_y = el.rect.bottom - inner_padding - inner_height
+                if inner_height > 0:
+                    pygame.draw.rect(screen, (50, 150, 255), (inner_x, inner_y, inner_width, inner_height),
+                                     border_radius=8)
+                pygame.draw.rect(screen, el.color, el.rect, border_radius=12, width=3)
+                segment_height = el.rect.height / 10
+                for i in range(1, 10):
+                    y = int(el.rect.y + segment_height * i)
+                    pygame.draw.line(screen, el.color, (el.rect.x + inner_padding, y), (el.rect.x + el.rect.width - inner_padding, y), 1)
+
             elif len(el.frame) == 0:
                 # Rendre transparent les rectangles sans images
                 if el.type not in ["platform", "wall", "water_tank", "score_bare", "pollution_bare"]:
@@ -20,9 +37,17 @@ def draw_element(screen, element): # element -> list d'objet de la class ObjetCl
                     pygame.draw.rect(temp_surface, (*el.color, 0), temp_surface.get_rect(), border_radius=5)  # Transparent
                     screen.blit(temp_surface, el.rect)
             elif len(el.frame) == 1:
-                screen.blit(el.frame[0], el.rect.topleft)
+                if el.type == "dirt_pile":
+                    img = el.frame[0]
+                    screen.blit(img, (el.rect.x, el.rect.bottom - img.get_height()))
+                else:
+                    screen.blit(el.frame[0], el.rect.topleft)
             else:
-                screen.blit(el.frame[int(el.anim_index) % len(el.frame)], el.rect.topleft)
+                img = el.frame[int(el.anim_index) % len(el.frame)]
+                if el.type == "dirt_pile":
+                    screen.blit(img, (el.rect.x, el.rect.bottom - img.get_height()))
+                else:
+                    screen.blit(img, el.rect.topleft)
                 el.anim_index += el.anim_speed
 
 # fonction qui cree une list d'element de la class ObjetClass et qui les renvoie dans une list
@@ -46,8 +71,8 @@ def create_element(element, niveau = 0, bg = '0'): # element = {"water" : [[160,
 
             elif key == "dirt_pile":
                 rect[-1].frame = [pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre.png").convert_alpha(),(30, 20)),
-                                  pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre_haut.png").convert_alpha(),(30, 30)),
-                                  pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre_plant.png").convert_alpha(),(30, 40))]
+                                  pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre_haut.png").convert_alpha(),(110, 100)),
+                                  pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre_plant.png").convert_alpha(),(110, 100))]
 
             elif key == "poubelle_plastique":
                 rect[-1].frame = [pygame.transform.scale(pygame.image.load("./Asset/maps/poubelle_plastique.png").convert_alpha(), (100, 100))]
@@ -104,9 +129,8 @@ def gestion_eau(map, value):
         map.water = 100
     elif map.water < 0:
         map.water = 0
-    h = 120 * (map.water / 100)
-    map.water_tank.rect.height = h
-    map.water_tank.rect.y = 660 - h
+    if hasattr(map, 'water_tube'):
+        map.water_tube.variable = map.water
 
 # fonction qui gere la taille de la barre
 def gestion_score_bare(map, value): # value en %
@@ -221,9 +245,9 @@ def draw_popup(screen, map):
         # Texte du message selon le niveau
         if map.niveau == 1:
             message = ("Le plastique éternel : Saviez-vous qu'une bouteille en plastique met environ 450 ans "
-                       "à se décomposer ? Elle ne disparaît jamais vraiment, elle se transforme en microplastiques.\n\n"
+                       "à se\n décomposer ? Elle ne disparaît jamais vraiment, elle se transforme en microplastiques.\n\n"
                        "L'ennemi invisible : 80% des déchets marins proviennent de la terre ferme. "
-                       "Chaque geste compte, même loin des côtes.\n\n"
+                       "Chaque geste\ne compte, même loin des côtes.\n\n"
                        "Le mégot fatal : Un seul mégot de cigarette peut polluer jusqu'à 1 000 litres d'eau.")
             next_level_text = "Passage au niveau 2 dans {seconds_left}s"
             next_level = 2
@@ -232,7 +256,7 @@ def draw_popup(screen, map):
                        "n'est pas un petit geste, c'est une nécessité systémique.\n\n"
                        "2- L'or bleu : Moins de 1% de l'eau sur Terre est douce et accessible.\n Dans ce jeu comme dans la réalité, "
                        "chaque goutte est précieuse.\n\n"
-                       "3- Numérique polluant : Si Internet était un pays, il serait le 3ème plus gros consommateur d'électricité au monde.")
+                       "3- Numérique polluant : Si Internet était un pays, il serait le 3ème plus gros consommateur \nd'électricité au monde.")
             next_level_text = "Passage au niveau 3 dans {seconds_left}s"
             next_level = 3
         else:
