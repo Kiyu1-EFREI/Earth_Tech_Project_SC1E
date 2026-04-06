@@ -216,14 +216,24 @@ class MonstrePollution(pygame.sprite.Sprite):
 # Fonction pour obtenir les éléments du niveau 4
 def element_lvl_4():
     element = {
-        "boss": [[1050, 250, 140, 140]]
+        "boss": [[105, 15, 14, 14]]
     }
     return element
 
 # Fonction pour initialiser le niveau 4
 def init_lvl_4(map):
-    map.boss = ObjetClass(pygame.Rect(1050, 250, 140, 140), "boss")
-    map.boss.color = (60, 60, 60)
+    # Créer le boss avec son image
+    map.boss = ObjetClass(pygame.Rect(1050, 150, 140, 140), "boss")
+
+    # Charger l'image du boss
+    try:
+        boss_img = pygame.image.load("./Asset/maps/boss.png").convert_alpha()
+        boss_img = pygame.transform.scale(boss_img, (140, 140))
+        map.boss.frame = [boss_img]
+    except:
+        # Si l'image n'existe pas, afficher un carré gris en attente
+        map.boss.color = (60, 60, 60)
+
     map.boss.hp = 5
     map.boss.max_hp = 5
 
