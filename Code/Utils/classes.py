@@ -44,6 +44,8 @@ class MapClass:
         self.intervalle_apparition = 120
         self.types_dechets = []
         self.couleurs_dechets = {}
+        self.popup_active = False
+        self.popup_timer = 0
 
 
 # Class pour cree des element, avec ou sans animation, qui vont etre ou pas, afficher a l'ecran

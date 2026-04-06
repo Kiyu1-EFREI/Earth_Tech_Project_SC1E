@@ -105,6 +105,9 @@ def run_map(map):
         draw_list.append(map.pollution_bare)
     draw_element(map.screen, draw_list)
 
+    # Afficher le popup si actif
+    draw_popup(map.screen, map)
+
     if map.niveau == 3:
         font = pygame.font.Font(None, 36)
         score_text = f"Déchets déposés: {map.score}"

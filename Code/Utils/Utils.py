@@ -183,3 +183,58 @@ def resize(elements, new_w, new_h, old_w, old_h):
         if len(el.frame) > 0:
             for i in range(len(el.frame)):
                 el.frame[i] = pygame.transform.scale(el.frame[i], (el.rect.width, el.rect.height))
+
+
+# fonction qui affiche une popup avec texte arrondi
+def draw_popup(screen, map):
+    if map.popup_active:
+        # Dimensions de la fenêtre popup
+        popup_width = 800
+        popup_height = 400
+        popup_x = (screen.get_width() - popup_width) // 2
+        popup_y = (screen.get_height() - popup_height) // 2
+
+        # Créer une surface avec transparence pour le popup
+        popup_surface = pygame.Surface((popup_width, popup_height), pygame.SRCALPHA)
+
+        # Dessiner un rectangle arrondi semi-transparent
+        pygame.draw.rect(popup_surface, (50, 50, 50, 220), popup_surface.get_rect(), border_radius=20)
+        pygame.draw.rect(popup_surface, (100, 200, 100, 255), popup_surface.get_rect(), width=3, border_radius=20)
+
+        # Afficher la popup sur l'écran
+        screen.blit(popup_surface, (popup_x, popup_y))
+
+        # Texte du message
+        message = ("Le plastique éternel : Saviez-vous qu'une bouteille en plastique met environ 450 ans "
+                   "à se décomposer ? Elle ne disparaît jamais vraiment, elle se transforme en microplastiques.\n\n"
+                   "L'ennemi invisible : 80% des déchets marins proviennent de la terre ferme. "
+                   "Chaque geste compte, même loin des côtes.\n\n"
+                   "Le mégot fatal : Un seul mégot de cigarette peut polluer jusqu'à 1 000 litres d'eau.")
+
+        # Diviser le texte en plusieurs lignes pour l'afficher
+        font = pygame.font.Font(None, 18)
+        lines = message.split('\n')
+        y_offset = popup_y + 30
+
+        for line in lines:
+            if line.strip():
+                text_surface = font.render(line, True, (255, 255, 255))
+                screen.blit(text_surface, (popup_x + 20, y_offset))
+                y_offset += 30
+            else:
+                y_offset += 15
+
+        # Afficher le compte à rebours
+        seconds_left = max(0, (map.popup_timer // 60))
+        countdown_font = pygame.font.Font(None, 24)
+        countdown_text = countdown_font.render(f"Passage au niveau 2 dans {seconds_left}s", True, (255, 200, 100))
+        screen.blit(countdown_text,
+                    (popup_x + popup_width // 2 - countdown_text.get_width() // 2, popup_y + popup_height - 40))
+
+        # Décrémenter le timer
+        map.popup_timer -= 1
+
+        # Si le timer atteint 0, changer de niveau
+        if map.popup_timer <= 0:
+            map.popup_active = False
+            map.niveau = 2
