@@ -34,8 +34,8 @@ def init_main_menu(police):
             -1
         ),
         ButtonClass(
-            pygame.Rect(460, 520, 360, 80),
-            "Quitter",
+            pygame.Rect(465, 535, 320, 160),
+            "Asset/menu/quitter.png",
             button_font,
             0
         )
