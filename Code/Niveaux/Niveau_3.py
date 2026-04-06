@@ -1,5 +1,6 @@
 import pygame
 import random
+from random import choice
 from Code.Utils.Utils import *
 from Code.Utils.classes import ObjetClass
 
@@ -71,7 +72,7 @@ def utilisation_lvl_3(map, e):
 
 def generer_dechet(map):
     if len(map.dechets) < 10:
-        type_dechet = random.choice(map.types_dechets)
+        type_dechet = choice(map.types_dechets)
         couleur = map.couleurs_dechets[type_dechet]
 
         plateformes = [p for p in map.element if p.type == "platform"]
