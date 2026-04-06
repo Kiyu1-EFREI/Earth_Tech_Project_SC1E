@@ -1,7 +1,7 @@
 from Utils.map import*
 from Menu.menu import*
 import pygame
-from Code.Niveaux.Niveau_4 import init_lvl_4
+from Niveaux.Niveau_4 import init_lvl_4
 
 # structure pygame
 pygame.init()
