@@ -109,9 +109,14 @@ def run_map(map):
 
         x_pos = 10
         y_pos = 100
+        file_names = {
+            "plastique": "dechet_plastique.png",
+            "verre": "dechet_verre.png",
+            "alimentaire": "dechet_reste.png"
+        }
         for type_dechet, count in map.joueur.inventory.items():
             if count > 0:
-                img_path = f"./Asset/maps/dechet_{type_dechet}.png"
+                img_path = f"./Asset/maps/{file_names[type_dechet]}"
                 img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (50, 50))
                 map.screen.blit(img, (x_pos, y_pos))
                 x_pos += 60

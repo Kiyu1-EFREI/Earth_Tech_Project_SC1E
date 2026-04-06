@@ -7,13 +7,13 @@ from Code.Utils.classes import ObjetClass
 def element_lvl_3():
     element = {
         "poubelle_plastique": [
-            [70, 60, 10, 10]
+            [70, 50, 100, 100]
         ],
         "poubelle_verre": [
-            [85, 60, 10, 10]
+            [180, 50, 100, 100]
         ],
         "poubelle_reste": [
-            [100, 60, 10, 10]
+            [290, 50, 100, 100]
         ]
     }
     return element
@@ -68,19 +68,20 @@ def utilisation_lvl_3(map, e):
         if current_count == 0:
             map.joueur.inventory = {"plastique": 0, "verre": 0, "alimentaire": 0}
             map.joueur.inventory[e.type_dechet] = 1
-            e.visible = False
-            if e in map.dechets:
-                map.dechets.remove(e)
+            # Only remove the platform directly under the picked-up trash
             for p in list(map.element):
                 if p.type == "platform" and abs(p.rect.top - e.rect.bottom) < 5 and p.rect.left <= e.rect.centerx <= p.rect.right:
                     map.element.remove(p)
                     break
+            e.visible = False
+            if e in map.dechets:
+                map.dechets.remove(e)
             map.interaction = True
         else:
             map.interaction = False
 
 def generer_dechet(map):
-    if len(map.dechets) < 10:
+    if len(map.dechets) < 5:
         type_dechet = choice(map.types_dechets)
         couleur = map.couleurs_dechets[type_dechet]
 
@@ -92,7 +93,12 @@ def generer_dechet(map):
             dechet = ObjetClass(pygame.Rect(x, y, 50, 50), "dechet")
             dechet.type_dechet = type_dechet
             dechet.color = couleur
-            img_name = f"dechet_{type_dechet}.png"
+            file_names = {
+                "plastique": "dechet_plastique.png",
+                "verre": "dechet_verre.png",
+                "alimentaire": "dechet_reste.png"
+            }
+            img_name = file_names[type_dechet]
             dechet.frame = [pygame.transform.scale(pygame.image.load(f"./Asset/maps/{img_name}").convert_alpha(), (50, 50))]
             dechet.visible = True
             map.dechets.append(dechet)
