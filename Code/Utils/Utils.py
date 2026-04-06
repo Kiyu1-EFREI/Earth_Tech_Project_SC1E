@@ -214,11 +214,11 @@ def draw_popup(screen, map):
             next_level_text = "Passage au niveau 2 dans {seconds_left}s"
             next_level = 2
         elif map.niveau == 2:
-            message = ("L'énergie la plus propre : C'est celle que l'on ne consomme pas. Éteindre les lumières inutiles "
+            message = ("1- L'énergie la plus propre : C'est celle que l'on ne consomme pas. \nÉteindre les lumières inutiles "
                        "n'est pas un petit geste, c'est une nécessité systémique.\n\n"
-                       "L'or bleu : Moins de 1% de l'eau sur Terre est douce et accessible. Dans ce jeu comme dans la réalité, "
+                       "2- L'or bleu : Moins de 1% de l'eau sur Terre est douce et accessible.\n Dans ce jeu comme dans la réalité, "
                        "chaque goutte est précieuse.\n\n"
-                       "Numérique polluant : Si Internet était un pays, il serait le 3ème plus gros consommateur d'électricité au monde.")
+                       "3- Numérique polluant : Si Internet était un pays, il serait le 3ème plus gros consommateur d'électricité au monde.")
             next_level_text = "Passage au niveau 3 dans {seconds_left}s"
             next_level = 3
         else:
