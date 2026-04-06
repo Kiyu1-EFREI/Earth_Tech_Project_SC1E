@@ -1,3 +1,4 @@
+from .niveau_menu import init_lvl_menu
 from .parametre_menu import init_par_menu
 from .main_menu import init_main_menu
 from Code.Utils.Utils import draw_botton
@@ -18,7 +19,7 @@ def init_menu(menu, police):
         # IMPORTANT:
         # Replace this with the real level-menu initializer if you have one,
         # for example: init_niveau_menu(police)
-        element = []
+        element = init_lvl_menu(police)
     elif menu == -3:
         element = init_par_menu(police)
 
