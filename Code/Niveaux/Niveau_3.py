@@ -1,6 +1,6 @@
 import pygame
 import random
-from random import choice
+from random import choice, randint
 from Code.Utils.Utils import *
 from Code.Utils.classes import ObjetClass
 
@@ -77,8 +77,8 @@ def generer_dechet(map):
 
         plateformes = [p for p in map.element if p.type == "platform"]
         if plateformes :
-            p = random.choice(plateformes)
-            x = p.rect.x + random.randint(10, p.rect.width - 30)
+            p = choice(plateformes)
+            x = p.rect.x + randint(10, p.rect.width - 30)
             y = p.rect.y - 20
             dechet = ObjetClass(pygame.Rect(x, y, 20, 20), "dechet")
             dechet.type_dechet = type_dechet
