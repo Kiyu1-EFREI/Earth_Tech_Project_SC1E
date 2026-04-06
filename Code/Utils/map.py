@@ -107,6 +107,12 @@ def run_map(map):
 
     # Afficher le popup si actif
     draw_popup(map.screen, map)
+    if map.niveau == 2:
+        font = pygame.font.Font(None, 36)
+        extinguished_text = f"Flammes éteintes: {map.level_2_extinguished}/20"
+        text = font.render(extinguished_text, True, (255, 200, 100))
+        map.screen.blit(text, (10, 70))
+
 
     if map.niveau == 3:
         font = pygame.font.Font(None, 36)
