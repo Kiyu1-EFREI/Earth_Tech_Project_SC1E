@@ -216,7 +216,7 @@ class MonstrePollution(pygame.sprite.Sprite):
 # Fonction pour obtenir les éléments du niveau 4
 def element_lvl_4():
     element = {
-        "boss": [[105, 15, 14, 14]]
+        "boss": [[96, 1, 30, 25]]
     }
     return element
 
