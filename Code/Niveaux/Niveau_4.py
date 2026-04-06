@@ -230,7 +230,16 @@ class Level4:
 
         self.player_speed = 300
         self.jump_speed = 430
-        self.player_vy = 0.0
+
+        # Variables communes au mouvement existant
+        self.friction = 0.7
+        self.vitesse_max = 7
+        self.gravite = 0.8
+        self.acceleration = 0.8
+        self.vx = 0
+        self.vy = 0
+        self.en_contact = False
+        self.direction = 0
 
     def handle_events(self, events):
         for event in events:
@@ -242,18 +251,30 @@ class Level4:
                 self.boss.take_damage(1)
 
     def update(self, dt):
-        keys = pygame.key.get_pressed()
+        from Code.Utils.map import mouvement
 
-        speed = 300
-        if keys[pygame.K_LEFT] or keys[pygame.K_q]:
-            self.player.rect.x -= int(speed * dt)
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            self.player.rect.x += int(speed * dt)
-        if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
-            self.player.rect.y -= int(speed * dt)
+        # Réutilisation du mouvement déjà codé dans le projet
+        self.keys = pygame.key.get_pressed()
+        mouvement(self)
 
-        self.player.rect.x = max(0, min(SCREEN_WIDTH - self.player.rect.width, self.player.rect.x))
-        self.player.rect.y = max(0, min(SCREEN_HEIGHT - self.player.rect.height, self.player.rect.y))
+        # Limites de l'écran + sol du niveau 4
+        if self.player.rect.left < 0:
+            self.player.rect.left = 0
+            self.vx = 0
+        if self.player.rect.right > SCREEN_WIDTH:
+            self.player.rect.right = SCREEN_WIDTH
+            self.vx = 0
+
+        if self.player.rect.bottom >= GROUND_Y:
+            self.player.rect.bottom = GROUND_Y
+            self.vy = 0
+            self.en_contact = True
+        else:
+            self.en_contact = False
+
+        if self.player.rect.top < 0:
+            self.player.rect.top = 0
+            self.vy = 0
 
         self.boss.update(dt, self.player)
 
@@ -265,7 +286,7 @@ class Level4:
             self.victory = True
 
     def draw(self):
-        self.screen.blit(self.background, (0, 0))
+        self.screen.blit(self.background_elements[0].frame[0], (0, 0))
         pygame.draw.rect(self.screen, (90, 160, 80), (0, SCREEN_HEIGHT - 80, SCREEN_WIDTH, 80))
 
         self.screen.blit(self.player.image, self.player.rect)
