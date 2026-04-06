@@ -11,7 +11,14 @@ def draw_element(screen, element): # element -> list d'objet de la class ObjetCl
                 if len(el.frame) > 0:
                     screen.blit(el.frame[0], (0, 0))
             elif len(el.frame) == 0:
-                pygame.draw.rect(screen, el.color, el.rect)
+                # Rendre transparent les rectangles sans images
+                if el.type not in ["platform", "wall", "water_tank", "score_bare", "pollution_bare"]:
+                    pygame.draw.rect(screen, el.color, el.rect)
+                else:
+                    # Créer un rectangle semi-transparent pour les éléments de jeu
+                    temp_surface = pygame.Surface(el.rect.size, pygame.SRCALPHA)
+                    pygame.draw.rect(temp_surface, (*el.color, 0), temp_surface.get_rect(), border_radius=5)  # Transparent
+                    screen.blit(temp_surface, el.rect)
             elif len(el.frame) == 1:
                 screen.blit(el.frame[0], el.rect.topleft)
             else:
