@@ -210,6 +210,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         self.alive = False
         self.clouds.empty()
 
+
 class Level4:
     def __init__(self, screen):
         self.screen = screen
