@@ -47,7 +47,7 @@ def utilisation(map, e):
 # Fonction qui rassemble la gest des colision et les interaction pour eviter des boucle similaire
 def interaction(map):
     map.en_contact = False
-    for e in map.element[1:] + map.oiseau + map.fire:
+    for e in map.element[1:] + map.oiseau + map.fire + map.dechets:
         collision(map, e)
         if map.keys[pygame.K_e]:
             utilisation(map, e)
@@ -110,12 +110,19 @@ def run_map(map):
         text = font.render(score_text, True, (255, 255, 255))
         map.screen.blit(text, (10, 70))
 
+        x_pos = 10
+        y_pos = 100
+        file_names = {
+            "plastique": "dechet_plastique.png",
+            "verre": "dechet_verre.png",
+            "alimentaire": "dechet_reste.png"
+        }
         for type_dechet, count in map.joueur.inventory.items():
             if count > 0:
-                img_path = f"./Asset/maps/dechet_{type_dechet}.png"
-                img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (30, 30))
+                img_path = f"./Asset/maps/{file_names[type_dechet]}"
+                img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (50, 50))
                 map.screen.blit(img, (x_pos, y_pos))
-                x_pos += 40
+                x_pos += 60
 
     if map.keys[pygame.K_e]:
         map.press_e = True

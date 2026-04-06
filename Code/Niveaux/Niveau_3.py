@@ -7,13 +7,13 @@ from Code.Utils.classes import ObjetClass
 def element_lvl_3():
     element = {
         "poubelle_plastique": [
-            [80, 65, 4, 5]
+            [70, 50, 100, 100]
         ],
         "poubelle_verre": [
-            [100, 65, 4, 5]
+            [180, 50, 100, 100]
         ],
         "poubelle_reste": [
-            [120, 65, 4, 5]
+            [290, 50, 100, 100]
         ]
     }
     return element
@@ -64,26 +64,42 @@ def utilisation_lvl_3(map, e):
             map.interaction = False
 
     elif e.type == "dechet":
-        map.joueur.inventory[e.type_dechet] = map.joueur.inventory.get(e.type_dechet, 0) + 1
-        e.visible = False
-        if e in map.dechets:
-            map.dechets.remove(e)
-        map.interaction = True
+        current_count = sum(map.joueur.inventory.values())
+        if current_count == 0:
+            map.joueur.inventory = {"plastique": 0, "verre": 0, "alimentaire": 0}
+            map.joueur.inventory[e.type_dechet] = 1
+            # Only remove the platform directly under the picked-up trash
+            for p in list(map.element):
+                if p.type == "platform" and abs(p.rect.top - e.rect.bottom) < 5 and p.rect.left <= e.rect.centerx <= p.rect.right:
+                    map.element.remove(p)
+                    break
+            e.visible = False
+            if e in map.dechets:
+                map.dechets.remove(e)
+            map.interaction = True
+        else:
+            map.interaction = False
 
 def generer_dechet(map):
-    if len(map.dechets) < 10:
+    if len(map.dechets) < 5:
         type_dechet = choice(map.types_dechets)
         couleur = map.couleurs_dechets[type_dechet]
 
         plateformes = [p for p in map.element if p.type == "platform"]
         if plateformes :
             p = choice(plateformes)
-            x = p.rect.x + randint(10, p.rect.width - 30)
-            y = p.rect.y - 20
-            dechet = ObjetClass(pygame.Rect(x, y, 20, 20), "dechet")
+            x = p.rect.x + (p.rect.width - 50) // 2
+            y = p.rect.y - 50
+            dechet = ObjetClass(pygame.Rect(x, y, 50, 50), "dechet")
             dechet.type_dechet = type_dechet
             dechet.color = couleur
-            dechet.frame = [pygame.transform.scale(pygame.image.load(f"./Asset/maps/dechet_{type_dechet}.png" if type_dechet != "verre" else "./Asset/maps/verre2.png").convert_alpha(), (20, 20))]
+            file_names = {
+                "plastique": "dechet_plastique.png",
+                "verre": "dechet_verre.png",
+                "alimentaire": "dechet_reste.png"
+            }
+            img_name = file_names[type_dechet]
+            dechet.frame = [pygame.transform.scale(pygame.image.load(f"./Asset/maps/{img_name}").convert_alpha(), (50, 50))]
             dechet.visible = True
             map.dechets.append(dechet)
 
@@ -92,8 +108,8 @@ def update_lvl_3(map):
     if aleatoire(map.aleatoire):
         generer_dechet(map)
     gestion_pollution(map)
-    if map.score >= 20:
-        map.niveau = 0  # Win, return to menu
+    if map.pollution >= 100 or map.score >= 20:
+        map.niveau = 0
 
 def gestion_pollution(map):
     map.pollution = min(100, map.pollution + 0.1)
