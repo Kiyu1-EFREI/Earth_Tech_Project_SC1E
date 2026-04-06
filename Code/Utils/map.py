@@ -1,6 +1,7 @@
 from Code.Niveaux.Niveau_1 import*
 from Code.Niveaux.Niveau_2 import*
 from Code.Niveaux.Niveau_3 import*
+from Code.Niveaux.Niveau_4 import*
 from Code.Niveaux.Niveau_4 import init_lvl_4
 from .Utils import*
 from .classes import*
@@ -40,8 +41,8 @@ def utilisation(map, e):
         elif map.niveau == 3:
             utilisation_lvl_3(map, e)
         elif map.niveau == 4:
-            # Niveau 4 gère sa propre logique dans Code/Niveaux/Niveau_4.py
-            pass
+            utilisation_lvl_4(map, e)
+
 
 
 # Fonction qui rassemble la gest des colision et les interaction pour eviter des boucle similaire
@@ -154,7 +155,7 @@ def init_map(niveau, screen):
     elif niveau == 3:
         element_lvl = element_lvl_3()
     elif niveau == 4:
-        element_lvl = element_lvl_1()
+        element_lvl = element_lvl_4()
     else:
         element_lvl = element_lvl_1()
 
@@ -206,7 +207,7 @@ def init_map(niveau, screen):
     elif niveau == 3:
         init_lvl_3(map)
     elif niveau == 4:
-        init_lvl_1(map)
+        init_lvl_4(map)
         map.background_elements = map.element
 
     return map

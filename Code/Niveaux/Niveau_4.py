@@ -1,6 +1,7 @@
 import pygame
 import random
-
+from Code.Utils.Utils import create_element, gestion_eau
+from Code.Utils.classes import Player, ObjetClass
 from Code.Utils.Utils import create_element
 from Code.Utils.classes import Player
 # Constantes de jeu
@@ -211,101 +212,26 @@ class MonstrePollution(pygame.sprite.Sprite):
         self.clouds.empty()
 
 
-class Level4:
-    def __init__(self, screen):
-        from Code.Utils.map import init_map
 
-        self.screen = screen
+# Fonction pour obtenir les éléments du niveau 4
+def element_lvl_4():
+    element = {
+        "boss": [[1050, 250, 140, 140]]
+    }
+    return element
 
-        # Réutilise la base de carte du projet, comme pour le niveau 1
-        self.base_map = init_map(4, screen)
-        self.background_elements = self.base_map.element
+# Fonction pour initialiser le niveau 4
+def init_lvl_4(map):
+    map.boss = ObjetClass(pygame.Rect(1050, 250, 140, 140), "boss")
+    map.boss.color = (60, 60, 60)
+    map.boss.hp = 5
+    map.boss.max_hp = 5
 
-        self.player = Player(120, GROUND_Y - 60)
-        self.player.vy = 0
-        self.player.on_ground = True
-
-        self.boss = MonstrePollution(1050, 250)
-        self.level_finished = False
-        self.victory = False
-        self.game_over = False
-        self.font = pygame.font.Font(None, 72)
-
-        self.player_speed = 300
-        self.jump_speed = 430
-
-        # Variables communes au mouvement existant
-        self.friction = 0.7
-        self.vitesse_max = 7
-        self.gravite = 0.8
-        self.acceleration = 0.8
-        self.vx = 0
-        self.vy = 0
-        self.en_contact = False
-        self.direction = 0
-
-    def handle_events(self, events):
-        for event in events:
-            if event.type == pygame.QUIT:
-                self.game_over = True
-
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
-                self.boss.become_vulnerable()
-                self.boss.take_damage(1)
-
-    def update(self, dt):
-        from Code.Utils.map import mouvement
-
-        # Réutilisation du mouvement déjà codé dans le projet
-        self.keys = pygame.key.get_pressed()
-        mouvement(self)
-
-        # Limites de l'écran + sol du niveau 4
-        if self.player.rect.left < 0:
-            self.player.rect.left = 0
-            self.vx = 0
-        if self.player.rect.right > SCREEN_WIDTH:
-            self.player.rect.right = SCREEN_WIDTH
-            self.vx = 0
-
-        if self.player.rect.bottom >= GROUND_Y:
-            self.player.rect.bottom = GROUND_Y
-            self.vy = 0
-            self.en_contact = True
-        else:
-            self.en_contact = False
-
-        if self.player.rect.top < 0:
-            self.player.rect.top = 0
-            self.vy = 0
-
-        self.boss.update(dt, self.player)
-
-        if self.player.is_dead():
-            self.game_over = True
-
-        if not self.boss.alive:
-            self.level_finished = True
-            self.victory = True
-
-    def draw(self):
-        self.screen.blit(self.background_elements[0].frame[0], (0, 0))
-        pygame.draw.rect(self.screen, (90, 160, 80), (0, SCREEN_HEIGHT - 80, SCREEN_WIDTH, 80))
-
-        self.screen.blit(self.player.image, self.player.rect)
-        self.player.draw_hp(self.screen)
-        self.boss.draw(self.screen)
-
-        if self.game_over and not self.victory:
-            text = self.font.render("GAME OVER", True, (255, 50, 50))
-            self.screen.blit(text, text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)))
-
-        if self.victory:
-            text = self.font.render("VICTOIRE !", True, (50, 255, 50))
-            self.screen.blit(text, text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)))
-
-
-def init_lvl_4(screen):
-    return Level4(screen)
-
-
+# Fonction pour gérer les interactions du niveau 4
+def utilisation_lvl_4(map, e):
+    if e.type == "boss" and map.water > 0:
+        gestion_eau(map, -1)
+        map.boss.hp -= 1
+        if map.boss.hp <= 0:
+            map.score += 1
+            e.visible = False

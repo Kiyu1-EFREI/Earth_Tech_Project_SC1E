@@ -61,14 +61,9 @@ try:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 click = True
 
-        if niveau == 4 and level4 is not None:
-            level4.handle_events(events)
-            dt = clock.tick(60) / 1000.0
-            level4.update(dt)
-            level4.draw()
-
-            if level4.game_over or level4.level_finished:
-                run = False
+        if niveau == 4 and 'map' in locals():
+            run_map(map)
+            new_niveau = map.niveau
 
         elif niveau > 0:
             map.click = click
@@ -80,12 +75,9 @@ try:
         if niveau != 4 and niveau != new_niveau:
             niveau = new_niveau
             if niveau > 0:
-                if niveau == 4:
-                    level4 = init_lvl_4(screen)
-                else:
-                    map = init_map(niveau, screen)
-                    map.screen = screen
-                    map_resize(map, screen.get_width(), screen.get_height(), 1280, 720)
+                map = init_map(niveau, screen)
+                map.screen = screen
+                map_resize(map, screen.get_width(), screen.get_height(), 1280, 720)
             elif niveau == 0:
                 run = False
             else:
