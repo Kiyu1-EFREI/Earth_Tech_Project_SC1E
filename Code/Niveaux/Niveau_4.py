@@ -1,5 +1,7 @@
 import pygame
 import random
+
+from Code.Utils.Utils import create_element
 from Code.Utils.classes import Player
 # Constantes de jeu
 GRAVITY = 800  # Valeur de 'g' dans l'équation
@@ -211,10 +213,8 @@ class MonstrePollution(pygame.sprite.Sprite):
 class Level4:
     def __init__(self, screen):
         self.screen = screen
-        self.background = pygame.transform.scale(
-            pygame.image.load("./Asset/maps/forest_background.png").convert(),
-            (SCREEN_WIDTH, SCREEN_HEIGHT)
-        )
+        self.background_elements = create_element({}, 4, "maps/forest_background.png")
+
         self.player = Player(120, GROUND_Y - 60)
         self.player.vy = 0
         self.player.on_ground = True
@@ -262,7 +262,7 @@ class Level4:
             self.victory = True
 
     def draw(self):
-        self.screen.fill((120, 200, 255))
+        self.screen.blit(self.background, (0, 0))
         pygame.draw.rect(self.screen, (90, 160, 80), (0, SCREEN_HEIGHT - 80, SCREEN_WIDTH, 80))
 
         self.screen.blit(self.player.image, self.player.rect)
