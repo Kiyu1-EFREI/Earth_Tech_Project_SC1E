@@ -81,7 +81,7 @@ def utilisation_lvl_3(map, e):
             map.interaction = False
 
 def generer_dechet(map):
-    if len(map.dechets) < 5:
+    if len(map.dechets) < 10 and map.types_dechets:
         type_dechet = choice(map.types_dechets)
         couleur = map.couleurs_dechets[type_dechet]
 
@@ -105,6 +105,8 @@ def generer_dechet(map):
 
 
 def update_lvl_3(map):
+    if not map.types_dechets:  # Si types_dechets n'est pas initialisé, ne rien faire
+        return
     if aleatoire(map.aleatoire):
         generer_dechet(map)
     gestion_pollution(map)
