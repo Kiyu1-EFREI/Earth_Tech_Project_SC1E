@@ -53,6 +53,13 @@ def create_element(element, niveau = 0, bg = '0'): # element = {"water" : [[160,
 
             elif key == "water":
                 rect[-1].color = (0, 0, 255)
+            elif key == "boss":
+                try:
+                    boss_img = pygame.image.load("./Asset/maps/boss.png").convert_alpha()
+                    boss_img = pygame.transform.scale(boss_img, (int(i[2] * 10), int(i[3] * 10)))
+                    rect[-1].frame = [boss_img]
+                except Exception:
+                    rect[-1].color = (60, 60, 60)
 
     return rect
 
