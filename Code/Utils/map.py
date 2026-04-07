@@ -153,7 +153,34 @@ def run_map(map):
         gestion_pollution_bare(map)
         gestion_score_bare(map, (map.score * 100) / 10)
     elif map.niveau == 4:
-        pass
+        dt = 1 / 60  # Assuming 60 FPS
+        map.boss.update(dt, map.joueur)
+
+        # Check seed pickup
+        seed_hits = pygame.sprite.spritecollide(map.joueur, map.boss.seeds, True)
+        if seed_hits:
+            map.boss.become_vulnerable()
+
+        # Check attack on boss
+        if map.keys[pygame.K_e] and map.joueur.rect.colliderect(map.boss.rect) and map.boss.vulnerable:
+            map.boss.take_damage(1)
+
+        # Draw boss
+        map.boss.draw(map.screen)
+
+        # Draw player HP
+        font = pygame.font.Font(None, 36)
+        hp_text = f"HP: {map.joueur.hp}/{map.joueur.max_hp}"
+        text = font.render(hp_text, True, (255, 255, 255))
+        map.screen.blit(text, (10, 10))
+
+        # Check win condition
+        if not map.boss.alive:
+            map.niveau = 0  # Return to menu
+
+        # Check game over
+        if map.joueur.hp <= 0:
+            map.niveau = 0  # Game over
         
 
 
