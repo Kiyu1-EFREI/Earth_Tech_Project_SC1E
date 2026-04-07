@@ -71,8 +71,8 @@ def create_element(element, niveau = 0, bg = '0'): # element = {"water" : [[160,
 
             elif key == "dirt_pile":
                 rect[-1].frame = [pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre.png").convert_alpha(),(30, 20)),
-                                  pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre_haut.png").convert_alpha(),(110, 100)),
-                                  pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre_plant.png").convert_alpha(),(110, 100))]
+                                  pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre_haut.png").convert_alpha(),(30, 30)),
+                                  pygame.transform.scale(pygame.image.load("./Asset/maps/tas_terre_plant.png").convert_alpha(),(30, 40))]
 
             elif key == "poubelle_plastique":
                 rect[-1].frame = [pygame.transform.scale(pygame.image.load("./Asset/maps/poubelle_plastique.png").convert_alpha(), (100, 100))]
