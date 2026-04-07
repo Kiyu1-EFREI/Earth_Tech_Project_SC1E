@@ -207,7 +207,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         """
         hits = pygame.sprite.spritecollide(player, self.clouds, True)
         for _hit in hits:
-            player.lose_life()
+            player.hp -= 1
 
     def draw_hp_bar(self, surface):
         """
@@ -288,26 +288,7 @@ def element_lvl_4():
 
 # Fonction pour initialiser le niveau 4
 def init_lvl_4(map):
-    # Créer le boss avec son image
-    map.boss = ObjetClass(pygame.Rect(1050, 150, 140, 140), "boss")
-
-    # Charger l'image du boss
-    try:
-        boss_img = pygame.image.load("./Asset/maps/boss.png").convert_alpha()
-        boss_img = pygame.transform.scale(boss_img, (140, 140))
-        map.boss.frame = [boss_img]
-    except:
-        # Si l'image n'existe pas, afficher un carré gris en attente
-        map.boss.color = (60, 60, 60)
-
-    map.boss.hp = 5
-    map.boss.max_hp = 5
-
-# Fonction pour gérer les interactions du niveau 4
-def utilisation_lvl_4(map, e):
-    if e.type == "boss" and map.water > 0:
-        gestion_eau(map, -1)
-        map.boss.hp -= 1
-        if map.boss.hp <= 0:
-            map.score += 1
-            e.visible = False
+    # Créer le boss avec la classe MonstrePollution
+    map.boss = MonstrePollution(1050, 150)
+    map.joueur.hp = 5
+    map.joueur.max_hp = 5
