@@ -23,12 +23,14 @@ def utilisation_lvl_2(map, e):
         gestion_eau(map, -10)
         e.variable -= 10
         if e.variable <= 0:
-            map.fire.remove(e)
+            if e in map.fire:
+                map.fire.remove(e)
             map.score -= 1
             map.level_2_extinguished += 1
 
             # Vérifier si le joueur a gagné
             if map.level_2_extinguished >= 20:
+                map.fire.clear()  # Fait disparaître toutes les flammes restantes
                 map.popup_active = True
                 map.popup_timer = 1000
 
@@ -64,9 +66,9 @@ def init_lvl_2(map):
     create_fire(map, 111, 18)
     create_fire(map, 94, 55)
     create_fire(map, 38, 10)
-    map.aleatoire.s = 2.5
-    map.aleatoire.min = 2.5
-    map.aleatoire.max = 4
+    map.aleatoire.s = 3
+    map.aleatoire.min = 3
+    map.aleatoire.max = 6
     map.score = 3
     map.level_2_extinguished = 0
     map.defeat_active = False
