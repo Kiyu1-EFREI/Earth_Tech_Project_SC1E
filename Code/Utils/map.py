@@ -215,10 +215,7 @@ def init_map(niveau, screen):
     else:
         map.seed_box = None
 
-    if niveau == 3:
-        map.water_tank.visible = False
-    elif niveau == 4:
-        map.water_tank.visible = False
+    if niveau == 4:
         map.water_tube.visible = False
     elif niveau == 1:
         map.score_bare.visible = False
