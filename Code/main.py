@@ -9,7 +9,7 @@ clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
 #screen = pygame.display.set_mode((1400, 800))
-#screen = pygame.display.set_mode((width, height))
+#screen = pygame.display.set_mode((width, height))oo
 #screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 police = "Arial"
 click = False
