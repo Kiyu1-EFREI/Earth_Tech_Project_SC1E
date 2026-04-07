@@ -63,20 +63,27 @@ class MagicSeed(pygame.sprite.Sprite):
         self.vx = vx
         self.vy = vy0
 
+        self.on_ground = False
+
     def update(self, dt):
         """
         Trajectoire parabolique pour la graine.
         """
-        self.vy += GRAVITY * dt
-        self.pos_x += self.vx * dt
-        self.pos_y += self.vy * dt
+        if not self.on_ground:
+            self.vy += GRAVITY * dt
+            self.pos_x += self.vx * dt
+            self.pos_y += self.vy * dt
+
+            if self.pos_y >= GROUND_Y - self.rect.height // 2:
+                self.pos_y = GROUND_Y - self.rect.height // 2
+                self.vx = 0
+                self.vy = 0
+                self.on_ground = True
+
 
         self.rect.x = int(self.pos_x)
         self.rect.y = int(self.pos_y)
 
-        # Supprimer si sort de l'écran
-        if self.rect.top > SCREEN_HEIGHT or self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
-            self.kill()
 
 class MonstrePollution(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -100,8 +107,8 @@ class MonstrePollution(pygame.sprite.Sprite):
         self.fire_timer = 0.0
 
         # paramètres de tir
-        self.min_flight_time = 0.8
-        self.max_flight_time = 1.6
+        self.min_flight_time = 1.5
+        self.max_flight_time = 3.0
 
         # Timer pour la graine magique (aléatoire autour de 15 secondes)
         self.seed_timer = 0.0

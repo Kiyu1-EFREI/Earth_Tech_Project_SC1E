@@ -163,9 +163,10 @@ def run_map(map):
             map.boss.update(dt, map.joueur)
 
         # Check seed pickup
-        seed_hits = pygame.sprite.spritecollide(map.joueur, map.boss.seeds, True)
-        if seed_hits:
-            map.boss.become_vulnerable()
+        if map.press_e:
+            seed_hits = pygame.sprite.spritecollide(map.joueur, map.boss.seeds, True)
+            if seed_hits:
+                map.boss.become_vulnerable()
 
         # Check attack on boss
         if map.keys[pygame.K_e] and map.joueur.rect.colliderect(map.boss.rect) and map.boss.vulnerable:
