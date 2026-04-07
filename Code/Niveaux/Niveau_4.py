@@ -69,10 +69,11 @@ class MagicSeed(pygame.sprite.Sprite):
     def check_platform_collision(self):
         """
         Vérifie la collision avec les plateformes et le sol.
+                Retourne le rect de la plateforme où la graine atterrit, ou None.
         """
         # Vérifier collision avec le sol
         if self.pos_y >= GROUND_Y - self.rect.height // 2:
-            return True
+            return pygame.Rect(0, GROUND_Y, SCREEN_WIDTH, 100)  # Pseudo-rect du sol
 
         # Vérifier collision avec les plateformes
         for platform in self.platforms:
@@ -80,9 +81,9 @@ class MagicSeed(pygame.sprite.Sprite):
             if self.rect.colliderect(plat_rect) and self.vy >= 0:
                 # Vérifier si la graine tombe sur la plateforme (par le haut)
                 if self.pos_y + self.rect.height // 2 >= plat_rect.top and self.pos_y - self.rect.height // 2 <= plat_rect.top:
-                    return True
+                    return plat_rect
 
-        return False
+        return None
 
     def update(self, dt):
         """
@@ -96,8 +97,11 @@ class MagicSeed(pygame.sprite.Sprite):
             self.rect.x = int(self.pos_x)
             self.rect.y = int(self.pos_y)
 
-            if self.check_platform_collision():
-                self.pos_y = GROUND_Y - self.rect.height // 2
+            collision_rect = self.check_platform_collision()
+            if collision_rect:
+                # Placer la graine correctement au-dessus de la surface détectée
+                self.pos_y = collision_rect.top - self.rect.height // 2
+                self.rect.y = int(self.pos_y)
                 self.vx = 0
                 self.vy = 0
                 self.on_ground = True
@@ -185,12 +189,32 @@ class MonstrePollution(pygame.sprite.Sprite):
         origin_x = self.rect.centerx
         origin_y = self.rect.centery
 
-        # Point cible aléatoire sur la map - entre les limites (respecter les murs à x = -1 et x = 128 en unités)
-        # Convertir à pixels: -1 * 10 = -10 et 128 * 10 = 1280
-        # Lancer la graine entre 0 et 1280 (entre les murs)
-        target_x = random.randint(20, 1260)
-        target_y = random.randint(100, GROUND_Y - 100)
+        # Zone d'exclusion: wall [0, 45, 30, 25] en unités - convertir en pixels
+        wall_x_min = 0 * 10
+        wall_x_max = 30 * 10  # 300 pixels
+        wall_y_min = 45 * 10  # 450 pixels
+        wall_y_max = (45 + 25) * 10  # 700 pixels
 
+        # Générer une position cible valide (pas dans le wall)
+        valid_target = False
+        attempts = 0
+        max_attempts = 10
+
+        while not valid_target and attempts < max_attempts:
+            target_x = random.randint(20, 1260)
+            target_y = random.randint(100, GROUND_Y - 100)
+
+            # Vérifier que la position ne tombe pas dans le wall
+            if not (wall_x_min <= target_x <= wall_x_max and wall_y_min <= target_y <= wall_y_max):
+                valid_target = True
+
+            attempts += 1
+
+        # Si on n'a pas pu trouver une position valide, utiliser une position sûre
+        if not valid_target:
+            target_x = random.randint(350, 1260)  # À droite du wall
+            target_y = random.randint(100, GROUND_Y - 100)
+            
         dx = target_x - origin_x
         dy = target_y - origin_y
 
