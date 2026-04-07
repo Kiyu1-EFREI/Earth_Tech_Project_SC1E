@@ -107,8 +107,8 @@ class MonstrePollution(pygame.sprite.Sprite):
         self.fire_timer = 0.0
 
         # paramètres de tir
-        self.min_flight_time = 1.5
-        self.max_flight_time = 3.0
+        self.min_flight_time = 3.5
+        self.max_flight_time = 6.0
 
         # Timer pour la graine magique (aléatoire autour de 15 secondes)
         self.seed_timer = 0.0
