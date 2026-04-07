@@ -316,5 +316,5 @@ def draw_defeat(screen, map):
 
         # Si on clique n'importe où, on retourne au menu (niveau 0)
         if map.click:
-            map.niveau = 0
+            map.niveau = -2
             map.defeat_active = False
