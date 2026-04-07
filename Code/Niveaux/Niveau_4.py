@@ -89,7 +89,7 @@ class MonstrePollution(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.Surface((140, 140), pygame.SRCALPHA)
-        pygame.draw.circle(self.image, (60, 60, 60), (70, 70), 70)
+        pygame.draw.circle(self.image, (60, 60, 60,0), (70, 70), 70)
         self.rect = self.image.get_rect(center=(x, y))
 
         self.clouds = pygame.sprite.Group()
