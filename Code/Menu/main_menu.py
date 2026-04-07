@@ -20,7 +20,7 @@ def init_main_menu(police):
             0
         ),
         ButtonClass(
-            pygame.Rect(240, 30, 800, 400),
+            pygame.Rect(210, 30, 800, 400),
             "Asset/menu/main_menu_txt.png",
             title_font,
             None,
@@ -28,7 +28,7 @@ def init_main_menu(police):
             0
         ),
         ButtonClass(
-            pygame.Rect(500, 330, 290, 170),
+            pygame.Rect(340, 260, 560, 280),
             "Asset/menu/bouton_jouer.png",
             pygame.font.SysFont(police, 48),
             -1
