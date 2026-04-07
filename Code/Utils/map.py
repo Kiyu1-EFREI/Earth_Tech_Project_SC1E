@@ -193,7 +193,9 @@ def run_map(map):
                 end_text = font_large.render("Victoire !", True, (0, 255, 0))
             else:
                 end_text = font_large.render("Défaite", True, (255, 0, 0))
-            map.screen.blit(end_text, (SCREEN_WIDTH//2 - end_text.get_width()//2, SCREEN_HEIGHT//2 - end_text.get_height()//2))
+            screen_width = map.screen.get_width()
+            screen_height = map.screen.get_height()
+            map.screen.blit(end_text, (screen_width//2 - end_text.get_width()//2, screen_height//2 - end_text.get_height()//2))
 
             # Press any key to return to menu
             if any(map.keys):
@@ -213,7 +215,6 @@ def init_map(niveau, screen):
         element_lvl = element_lvl_3()
     elif niveau == 4:
         element_lvl = element_lvl_4()
-        init_lvl_4(map)
     else:
         element_lvl = element_lvl_1()
 
