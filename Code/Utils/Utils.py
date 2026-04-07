@@ -29,7 +29,7 @@ def draw_element(screen, element): # element -> list d'objet de la class ObjetCl
 
             elif len(el.frame) == 0:
                 # Rendre transparent les rectangles sans images
-                if el.type not in ["platform", "wall", "water_tank", "score_bare", "pollution_bare"]:
+                if el.type not in ["platform", "wall", "water_tank", "score_bare", "pollution_bare","water"]:
                     pygame.draw.rect(screen, el.color, el.rect)
                 else:
                     # Créer un rectangle semi-transparent pour les éléments de jeu
@@ -105,7 +105,7 @@ def element_map_general():
             [128, 0, 1, 72],
             [0, 45, 30, 25]
         ],
-        "water": [[1, 43, 14, 4]],
+        "water": [[5, 43, 17, 4]],
         "platform": [
             [89, 60, 12, 2],
             [45, 60, 12, 2],
