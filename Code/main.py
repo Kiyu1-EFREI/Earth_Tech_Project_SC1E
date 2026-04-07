@@ -17,6 +17,23 @@ continue_click = False
 old_w = 1280
 old_h = 720
 
+
+def fade_in(screen, width, height, element, police, continue_click):
+    fade_surface = pygame.Surface((width, height))
+    fade_surface.fill((0, 0, 0))
+
+    for alpha in range(255, -1, -5):
+        # 1. On dessine le menu normalement en fond
+        # On passe False pour 'click' car on ne veut pas cliquer pendant le fondu
+        run_menu(screen, element, 0, False, continue_click)
+
+        # 2. On applique le calque noir par-dessus avec l'alpha actuel
+        fade_surface.set_alpha(alpha)
+        screen.blit(fade_surface, (0, 0))
+
+        pygame.display.flip()
+        clock.tick(60)
+
 # premier initialisation
 niveau = -2
 if niveau > 0:
@@ -42,6 +59,7 @@ tracker = EmissionsTracker()
 tracker.start()
 try:
     run = True
+    faded = False
     while run:
         events = pygame.event.get()
         click = False
@@ -59,6 +77,10 @@ try:
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 click = True
+        if not faded:
+            # On lance le fondu en passant les éléments du menu
+            fade_in(screen, screen.get_width(), screen.get_height(), element, police, continue_click)
+            faded = True
 
         if niveau == 4 and 'map' in locals():
             run_map(map)
