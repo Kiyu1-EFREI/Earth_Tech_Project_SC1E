@@ -48,7 +48,7 @@ class PollutionCloud(pygame.sprite.Sprite):
         if self.rect.top > SCREEN_HEIGHT or self.rect.right < 0:
             self.kill()
 class MagicSeed(pygame.sprite.Sprite):
-    def __init__(self, x, y, vx, vy0):
+    def __init__(self, x, y, vx, vy0, platforms=None):
         super().__init__()
         # Visuel de la graine
         self.image = pygame.Surface((20, 20), pygame.SRCALPHA)
@@ -64,6 +64,25 @@ class MagicSeed(pygame.sprite.Sprite):
         self.vy = vy0
 
         self.on_ground = False
+        self.platforms = platforms if platforms else []
+
+    def check_platform_collision(self):
+        """
+        Vérifie la collision avec les plateformes et le sol.
+        """
+        # Vérifier collision avec le sol
+        if self.pos_y >= GROUND_Y - self.rect.height // 2:
+            return True
+
+        # Vérifier collision avec les plateformes
+        for platform in self.platforms:
+            plat_rect = pygame.Rect(platform['rect'])
+            if self.rect.colliderect(plat_rect) and self.vy >= 0:
+                # Vérifier si la graine tombe sur la plateforme (par le haut)
+                if self.pos_y + self.rect.height // 2 >= plat_rect.top and self.pos_y - self.rect.height // 2 <= plat_rect.top:
+                    return True
+
+        return False
 
     def update(self, dt):
         """
@@ -74,19 +93,18 @@ class MagicSeed(pygame.sprite.Sprite):
             self.pos_x += self.vx * dt
             self.pos_y += self.vy * dt
 
-            if self.pos_y >= GROUND_Y - self.rect.height // 2:
+            self.rect.x = int(self.pos_x)
+            self.rect.y = int(self.pos_y)
+
+            if self.check_platform_collision():
                 self.pos_y = GROUND_Y - self.rect.height // 2
                 self.vx = 0
                 self.vy = 0
                 self.on_ground = True
 
 
-        self.rect.x = int(self.pos_x)
-        self.rect.y = int(self.pos_y)
-
-
 class MonstrePollution(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, platforms=None):
         super().__init__()
         self.image = pygame.Surface((140, 140), pygame.SRCALPHA)
         pygame.draw.circle(self.image, (60, 60, 60), (70, 70), 70)
@@ -103,16 +121,19 @@ class MonstrePollution(pygame.sprite.Sprite):
         self.font = pygame.font.Font(None, 36)
 
         # cadence de tir
-        self.fire_interval = 1.2
+        self.fire_interval = 3.0
         self.fire_timer = 0.0
 
         # paramètres de tir
-        self.min_flight_time = 2.5
+        self.min_flight_time = 3.0
         self.max_flight_time = 5.0
 
         # Timer pour la graine magique (aléatoire autour de 15 secondes)
         self.seed_timer = 0.0
         self.seed_interval = random.uniform(12, 18)
+
+        # Stocker les plateformes pour les collisions des graines
+        self.platforms = platforms if platforms else []
 
     def choose_target_point(self, player):
         """
@@ -164,8 +185,10 @@ class MonstrePollution(pygame.sprite.Sprite):
         origin_x = self.rect.centerx
         origin_y = self.rect.centery
 
-        # Point cible aléatoire sur la map
-        target_x = random.randint(100, SCREEN_WIDTH - 100)
+        # Point cible aléatoire sur la map - entre les limites (respecter les murs à x = -1 et x = 128 en unités)
+        # Convertir à pixels: -1 * 10 = -10 et 128 * 10 = 1280
+        # Lancer la graine entre 0 et 1280 (entre les murs)
+        target_x = random.randint(20, 1260)
         target_y = random.randint(100, GROUND_Y - 100)
 
         dx = target_x - origin_x
@@ -176,7 +199,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         vx = dx / flight_time
         vy0 = (dy - 0.5 * GRAVITY * (flight_time ** 2)) / flight_time
 
-        new_seed = MagicSeed(origin_x, origin_y, vx, vy0)
+        new_seed = MagicSeed(origin_x, origin_y, vx, vy0, platforms=self.platforms)
         self.seeds.add(new_seed)
 
     def update(self, dt, player):
@@ -295,8 +318,22 @@ def element_lvl_4():
 
 # Fonction pour initialiser le niveau 4
 def init_lvl_4(map):
+    # Créer la liste des plateformes pour les collisions des graines
+    platforms = [
+        {'rect': pygame.Rect(89*10, 60*10, 12*10, 2*10)},
+        {'rect': pygame.Rect(45*10, 60*10, 12*10, 2*10)},
+        {'rect': pygame.Rect(67*10, 50*10, 12*10, 2*10)},
+        {'rect': pygame.Rect(60*10, 21*10, 12*10, 2*10)},
+        {'rect': pygame.Rect(107*10, 24*10, 12*10, 2*10)},
+        {'rect': pygame.Rect(48*10, 41*10, 12*10, 2*10)},
+        {'rect': pygame.Rect(25*10, 34*10, 12*10, 2*10)},
+        {'rect': pygame.Rect(6*10, 23*10, 12*10, 2*10)},
+        {'rect': pygame.Rect(33*10, 14*10, 12*10, 2*10)},
+        {'rect': pygame.Rect(78*10, 31*10, 12*10, 2*10)},
+        {'rect': pygame.Rect(96*10, 41*10, 12*10, 2*10)}
+    ]
     # Créer le boss avec la classe MonstrePollution
-    map.boss = MonstrePollution(1050, 150)
+    map.boss = MonstrePollution(1050, 150, platforms=platforms)
     map.joueur.hp = 5
     map.joueur.max_hp = 5
     map.game_over = False
