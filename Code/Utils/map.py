@@ -1,6 +1,8 @@
 from Code.Niveaux.Niveau_1 import*
 from Code.Niveaux.Niveau_2 import*
 from Code.Niveaux.Niveau_3 import*
+from Code.Niveaux.Niveau_4 import*
+from Code.Niveaux.Niveau_4 import init_lvl_4, SCREEN_WIDTH, SCREEN_HEIGHT
 from .Utils import*
 from .classes import*
 
@@ -38,7 +40,12 @@ def utilisation(map, e):
             utilisation_lvl_2(map, e)
         elif map.niveau == 3:
             utilisation_lvl_3(map, e)
-        # utilisation_lvl_4(map)
+        elif map.niveau == 4:
+            utilisation_lvl_4(map, e)
+
+def utilisation_lvl_4(map, e):
+    # Pour le niveau 4, les interactions sont gérées dans run_map
+    pass
 
 
 # Fonction qui rassemble la gest des colision et les interaction pour eviter des boucle similaire
@@ -96,10 +103,29 @@ def run_map(map):
         map.joueur.anim_index = 0.0
 
     map.joueur.frame = map.player_img[map.d_save][map.en_contact]
-    draw_list = map.element + map.oiseau + map.fire + map.dechets + [map.water_tank, map.score_bare, map.joueur]
+    draw_list = map.element + map.oiseau + map.fire + map.dechets + [map.water_tube, map.score_bare, map.joueur]
     if hasattr(map, 'pollution_bare'):
         draw_list.append(map.pollution_bare)
     draw_element(map.screen, draw_list)
+
+    if map.niveau == 1 and getattr(map, 'seed_box', None) is not None:
+        pygame.draw.rect(map.screen, (30, 30, 30), map.seed_box)
+        pygame.draw.rect(map.screen, (255, 255, 255), map.seed_box, 3, border_radius=8)
+        if map.seed:
+            cx, cy = map.seed_box.center
+            pygame.draw.circle(map.screen, (140, 90, 30), (cx, cy), 14)
+            pygame.draw.circle(map.screen, (160, 110, 55), (cx, cy + 2), 10)
+
+    # Afficher le popup si actif
+    draw_popup(map.screen, map)
+    # Afficher la défaite si active
+    draw_defeat(map.screen, map)
+    if map.niveau == 2:
+        font = pygame.font.Font(None, 36)
+        extinguished_text = f"Flammes éteintes: {map.level_2_extinguished}/20"
+        text = font.render(extinguished_text, True, (255, 200, 100))
+        map.screen.blit(text, (10, 70))
+
 
     if map.niveau == 3:
         font = pygame.font.Font(None, 36)
@@ -109,17 +135,13 @@ def run_map(map):
 
         x_pos = 10
         y_pos = 100
-        file_names = {
-            "plastique": "dechet_plastique.png",
-            "verre": "dechet_verre.png",
-            "alimentaire": "dechet_reste.png"
-        }
-        for type_dechet, count in map.joueur.inventory.items():
-            if count > 0:
-                img_path = f"./Asset/maps/{file_names[type_dechet]}"
-                img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (50, 50))
-                map.screen.blit(img, (x_pos, y_pos))
-                x_pos += 60
+        if hasattr(map.joueur, 'inventory'):
+            for type_dechet, count in map.joueur.inventory.items():
+                if count > 0:
+                    img_path = f"./Asset/maps/dechet_{type_dechet}.png"
+                    img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (50, 50))
+                    map.screen.blit(img, (x_pos, y_pos))
+                    x_pos += 60
 
     if map.keys[pygame.K_e]:
         map.press_e = True
@@ -135,6 +157,52 @@ def run_map(map):
         update_lvl_3(map)
         gestion_pollution_bare(map)
         gestion_score_bare(map, (map.score * 100) / 10)
+    elif map.niveau == 4:
+        dt = 1 / 60  # Assuming 60 FPS
+        if not map.game_over and not map.victory:
+            map.boss.update(dt, map.joueur)
+
+        # Check seed pickup
+        if map.press_e:
+            seed_hits = pygame.sprite.spritecollide(map.joueur, map.boss.seeds, True)
+            if seed_hits:
+                map.boss.become_vulnerable()
+
+        # Check attack on boss
+        if map.keys[pygame.K_e] and map.joueur.rect.colliderect(map.boss.rect) and map.boss.vulnerable:
+            map.boss.take_damage(1)
+
+        # Draw boss
+        map.boss.draw(map.screen)
+
+        # Draw player HP
+        font = pygame.font.Font(None, 36)
+        hp_text = f"HP: {map.joueur.hp}/{map.joueur.max_hp}"
+        text = font.render(hp_text, True, (255, 255, 255))
+        map.screen.blit(text, (10, 10))
+
+        # Check win condition
+        if not map.boss.alive and not map.victory:
+            map.victory = True
+
+        # Check game over
+        if map.joueur.hp <= 0 and not map.game_over:
+            map.game_over = True
+
+        # Display end message
+        if map.game_over or map.victory:
+            font_large = pygame.font.Font(None, 72)
+            if map.victory:
+                end_text = font_large.render("Victoire !", True, (0, 255, 0))
+            else:
+                end_text = font_large.render("Défaite", True, (255, 0, 0))
+            screen_width = map.screen.get_width()
+            screen_height = map.screen.get_height()
+            map.screen.blit(end_text, (screen_width//2 - end_text.get_width()//2, screen_height//2 - end_text.get_height()//2))
+
+            # Press any key to return to menu
+            if any(map.keys):
+                map.niveau = 0
         
 
 
@@ -148,6 +216,8 @@ def init_map(niveau, screen):
         element_lvl = {}
     elif niveau == 3:
         element_lvl = element_lvl_3()
+    elif niveau == 4:
+        element_lvl = element_lvl_4()
     else:
         element_lvl = element_lvl_1()
 
@@ -182,14 +252,21 @@ def init_map(niveau, screen):
     map.player_img[1][False] = [pygame.transform.scale(pygame.image.load("./Asset/player/player_right_jump.png").convert_alpha(), (50, 50))]
     map.player_img[-1][False] = [pygame.transform.scale(pygame.image.load("./Asset/player/player_left_jump.png").convert_alpha(), (50, 50))]
 
-    map.water_tank = ObjetClass(pygame.Rect(100, 540, 90, 0), "water_tank")
-    map.water_tank.color = (50, 150, 255)
+    map.water_tube = ObjetClass(pygame.Rect(15, 530, 65, 120), "water_tube")
+    map.water_tube.color = (255, 255, 255)
+    map.water_tube.variable = 0
 
     map.score_bare = ObjetClass(pygame.Rect(10, 10, 0, 25), "score_bare")
     map.score_bare.color = (0, 0, 0)
-    if niveau == 3:
-        map.water_tank.visible = False
-    elif niveau == 4 or niveau == 1:
+
+    if niveau == 1:
+        map.seed_box = pygame.Rect(15, 660, 50, 50)
+    else:
+        map.seed_box = None
+
+    if niveau == 4:
+        map.water_tube.visible = False
+    elif niveau == 1:
         map.score_bare.visible = False
 
     if niveau == 1:
@@ -199,7 +276,8 @@ def init_map(niveau, screen):
     elif niveau == 3:
         init_lvl_3(map)
     elif niveau == 4:
-        init_lvl_1(map)
+        init_lvl_4(map)
+        map.background_elements = map.element
 
     return map
 

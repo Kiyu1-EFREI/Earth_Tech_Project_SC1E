@@ -44,6 +44,9 @@ class MapClass:
         self.intervalle_apparition = 120
         self.types_dechets = []
         self.couleurs_dechets = {}
+        self.popup_active = False
+        self.popup_timer = 0
+        self.level_2_extinguished = 0
 
 
 # Class pour cree des element, avec ou sans animation, qui vont etre ou pas, afficher a l'ecran
@@ -57,6 +60,9 @@ class ObjetClass:
         self.visible = True
         self.color = (100, 100, 100)
         self.variable = 0
+        if type == "player":
+            self.hp = 5
+            self.max_hp = 5
 
 # Classe pour gerer l'aleatoire
 class AleatoireClass:
