@@ -293,3 +293,28 @@ def draw_popup(screen, map):
         if map.popup_timer <= 0:
             map.popup_active = False
             map.niveau = next_level
+
+# fonction qui affiche la défaite et renvoie au menu au clic
+def draw_defeat(screen, map):
+    if getattr(map, 'defeat_active', False):
+        # Créer un overlay sombre semi-transparent
+        overlay = pygame.Surface((screen.get_width(), screen.get_height()), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 180))
+        screen.blit(overlay, (0, 0))
+
+        # Afficher "Défaite" en gros au milieu
+        font = pygame.font.Font(None, 150)
+        text = font.render("Défaite", True, (200, 0, 0))
+        rect = text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
+        screen.blit(text, rect)
+
+        # Petit texte d'instruction
+        font_small = pygame.font.Font(None, 40)
+        sub_text = font_small.render("Cliquez pour revenir au menu", True, (255, 255, 255))
+        sub_rect = sub_text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 + 100))
+        screen.blit(sub_text, sub_rect)
+
+        # Si on clique n'importe où, on retourne au menu (niveau 0)
+        if map.click:
+            map.niveau = 0
+            map.defeat_active = False

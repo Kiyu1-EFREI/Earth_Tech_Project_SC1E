@@ -34,7 +34,7 @@ def utilisation_lvl_2(map, e):
 
 # permet de gerer les feu
 def generation_fire(map):
-    if map.level_2_extinguished >= 20:
+    if map.level_2_extinguished >= 20 or getattr(map, 'defeat_active', False):
         return
     if len(map.fire) <= 1:
         nb_fire = 1
@@ -56,7 +56,7 @@ def generation_fire(map):
         map.score += 1
         create_fire(map, x, y)
     elif len(map.fire) >= 15:
-        print("Perdu")
+        map.defeat_active = True
 
 # initialisation des element et parametre pour le niveau 2
 def init_lvl_2(map):
@@ -64,8 +64,9 @@ def init_lvl_2(map):
     create_fire(map, 111, 18)
     create_fire(map, 94, 55)
     create_fire(map, 38, 10)
-    map.aleatoire.s = 2
-    map.aleatoire.min = 2
+    map.aleatoire.s = 2.5
+    map.aleatoire.min = 2.5
     map.aleatoire.max = 4
     map.score = 3
     map.level_2_extinguished = 0
+    map.defeat_active = False
