@@ -60,6 +60,9 @@ class ObjetClass:
         self.visible = True
         self.color = (100, 100, 100)
         self.variable = 0
+        if type == "player":
+            self.hp = 5
+            self.max_hp = 5
 
 # Classe pour gerer l'aleatoire
 class AleatoireClass:

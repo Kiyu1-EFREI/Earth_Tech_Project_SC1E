@@ -27,7 +27,6 @@ if niveau > 0:
     elif niveau == 3:
         element_lvl = element_lvl_3()
     elif niveau ==4:
-        level4 = init_lvl_4(screen)
         element_lvl = []
     else:
         element_lvl = element_lvl_1()
