@@ -47,7 +47,36 @@ class PollutionCloud(pygame.sprite.Sprite):
         # Supprimer si le nuage sort de l'écran
         if self.rect.top > SCREEN_HEIGHT or self.rect.right < 0:
             self.kill()
+class MagicSeed(pygame.sprite.Sprite):
+    def __init__(self, x, y, vx, vy0):
+        super().__init__()
+        # Visuel de la graine
+        self.image = pygame.Surface((20, 20), pygame.SRCALPHA)
+        pygame.draw.circle(self.image, (50, 200, 50), (10, 10), 10)  # Vert magique
+        self.rect = self.image.get_rect(center=(x, y))
 
+        # Variables de position précises (float)
+        self.pos_x = float(x)
+        self.pos_y = float(y)
+
+        # Vecteurs de vitesse
+        self.vx = vx
+        self.vy = vy0
+
+    def update(self, dt):
+        """
+        Trajectoire parabolique pour la graine.
+        """
+        self.vy += GRAVITY * dt
+        self.pos_x += self.vx * dt
+        self.pos_y += self.vy * dt
+
+        self.rect.x = int(self.pos_x)
+        self.rect.y = int(self.pos_y)
+
+        # Supprimer si sort de l'écran
+        if self.rect.top > SCREEN_HEIGHT or self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
+            self.kill()
 
 class MonstrePollution(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -57,8 +86,9 @@ class MonstrePollution(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(x, y))
 
         self.clouds = pygame.sprite.Group()
+        self.seeds = pygame.sprite.Group()
 
-        self.max_hp = 5
+        self.max_hp = 7
         self.hp = self.max_hp
         self.vulnerable = False
         self.alive = True
@@ -72,6 +102,10 @@ class MonstrePollution(pygame.sprite.Sprite):
         # paramètres de tir
         self.min_flight_time = 0.8
         self.max_flight_time = 1.6
+
+        # Timer pour la graine magique (aléatoire autour de 15 secondes)
+        self.seed_timer = 0.0
+        self.seed_interval = random.uniform(12, 18)
 
     def choose_target_point(self, player):
         """
@@ -116,12 +150,35 @@ class MonstrePollution(pygame.sprite.Sprite):
         new_cloud = PollutionCloud(origin_x, origin_y, vx, vy0)
         self.clouds.add(new_cloud)
 
+    def launch_seed(self):
+        """
+        Lance une graine magique avec une trajectoire parabolique aléatoire sur la map.
+        """
+        origin_x = self.rect.centerx
+        origin_y = self.rect.centery
+
+        # Point cible aléatoire sur la map
+        target_x = random.randint(100, SCREEN_WIDTH - 100)
+        target_y = random.randint(100, GROUND_Y - 100)
+
+        dx = target_x - origin_x
+        dy = target_y - origin_y
+
+        flight_time = random.uniform(1.5, 3.0)
+
+        vx = dx / flight_time
+        vy0 = (dy - 0.5 * GRAVITY * (flight_time ** 2)) / flight_time
+
+        new_seed = MagicSeed(origin_x, origin_y, vx, vy0)
+        self.seeds.add(new_seed)
+
     def update(self, dt, player):
         """
         Chef d'orchestre du boss :
         - cadence de tir
         - mise à jour des nuages
         - collisions nuages / joueur
+        - timer pour la graine
         """
         if not self.alive:
             return
@@ -131,7 +188,14 @@ class MonstrePollution(pygame.sprite.Sprite):
             self.fire_timer = 0.0
             self.launch_cloud(player=player)
 
+        self.seed_timer += dt
+        if self.seed_timer >= self.seed_interval:
+            self.seed_timer = 0.0
+            self.seed_interval = random.uniform(12, 18)  # Reset timer aléatoire
+            self.launch_seed()
+
         self.clouds.update(dt)
+        self.seeds.update(dt)
 
         if player is not None:
             self._check_cloud_hits(player)
@@ -143,7 +207,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         """
         hits = pygame.sprite.spritecollide(player, self.clouds, True)
         for _hit in hits:
-            player.lose_life()
+            player.hp -= 1
 
     def draw_hp_bar(self, surface):
         """
@@ -171,6 +235,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         """
         if self.alive:
             surface.blit(self.image, self.rect)
+        self.seeds.draw(surface)
         self.clouds.draw(surface)
         self.draw_hp_bar(surface)
 
@@ -204,12 +269,13 @@ class MonstrePollution(pygame.sprite.Sprite):
     def die(self):
         """
         Déclenche la fin du combat :
-        - vide les nuages
+        - vide les nuages et graines
         - désactive le boss
         - prépare l'animation de victoire
         """
         self.alive = False
         self.clouds.empty()
+        self.seeds.empty()
 
 
 
@@ -222,26 +288,7 @@ def element_lvl_4():
 
 # Fonction pour initialiser le niveau 4
 def init_lvl_4(map):
-    # Créer le boss avec son image
-    map.boss = ObjetClass(pygame.Rect(1050, 150, 140, 140), "boss")
-
-    # Charger l'image du boss
-    try:
-        boss_img = pygame.image.load("./Asset/maps/boss.png").convert_alpha()
-        boss_img = pygame.transform.scale(boss_img, (140, 140))
-        map.boss.frame = [boss_img]
-    except:
-        # Si l'image n'existe pas, afficher un carré gris en attente
-        map.boss.color = (60, 60, 60)
-
-    map.boss.hp = 5
-    map.boss.max_hp = 5
-
-# Fonction pour gérer les interactions du niveau 4
-def utilisation_lvl_4(map, e):
-    if e.type == "boss" and map.water > 0:
-        gestion_eau(map, -1)
-        map.boss.hp -= 1
-        if map.boss.hp <= 0:
-            map.score += 1
-            e.visible = False
+    # Créer le boss avec la classe MonstrePollution
+    map.boss = MonstrePollution(1050, 150)
+    map.joueur.hp = 5
+    map.joueur.max_hp = 5

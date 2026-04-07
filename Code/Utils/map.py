@@ -169,6 +169,7 @@ def init_map(niveau, screen):
         element_lvl = element_lvl_3()
     elif niveau == 4:
         element_lvl = element_lvl_4()
+        init_lvl_4(map)
     else:
         element_lvl = element_lvl_1()
 
