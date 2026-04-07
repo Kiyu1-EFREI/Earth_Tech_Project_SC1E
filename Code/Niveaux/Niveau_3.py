@@ -1,7 +1,6 @@
 import pygame
-import random
-from random import choice, randint
-from Code.Utils.Utils import *
+from random import choice
+from Code.Utils.Utils import aleatoire
 from Code.Utils.classes import ObjetClass
 
 def element_lvl_3():
