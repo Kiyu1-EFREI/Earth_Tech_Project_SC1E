@@ -2,7 +2,7 @@ from Code.Niveaux.Niveau_1 import*
 from Code.Niveaux.Niveau_2 import*
 from Code.Niveaux.Niveau_3 import*
 from Code.Niveaux.Niveau_4 import*
-from Code.Niveaux.Niveau_4 import init_lvl_4
+from Code.Niveaux.Niveau_4 import init_lvl_4, SCREEN_WIDTH, SCREEN_HEIGHT
 from .Utils import*
 from .classes import*
 
@@ -43,6 +43,9 @@ def utilisation(map, e):
         elif map.niveau == 4:
             utilisation_lvl_4(map, e)
 
+def utilisation_lvl_4(map, e):
+    # Pour le niveau 4, les interactions sont gérées dans run_map
+    pass
 
 
 # Fonction qui rassemble la gest des colision et les interaction pour eviter des boucle similaire
@@ -154,7 +157,8 @@ def run_map(map):
         gestion_score_bare(map, (map.score * 100) / 10)
     elif map.niveau == 4:
         dt = 1 / 60  # Assuming 60 FPS
-        map.boss.update(dt, map.joueur)
+        if not map.game_over and not map.victory:
+            map.boss.update(dt, map.joueur)
 
         # Check seed pickup
         seed_hits = pygame.sprite.spritecollide(map.joueur, map.boss.seeds, True)
@@ -175,12 +179,25 @@ def run_map(map):
         map.screen.blit(text, (10, 10))
 
         # Check win condition
-        if not map.boss.alive:
-            map.niveau = 0  # Return to menu
+        if not map.boss.alive and not map.victory:
+            map.victory = True
 
         # Check game over
-        if map.joueur.hp <= 0:
-            map.niveau = 0  # Game over
+        if map.joueur.hp <= 0 and not map.game_over:
+            map.game_over = True
+
+        # Display end message
+        if map.game_over or map.victory:
+            font_large = pygame.font.Font(None, 72)
+            if map.victory:
+                end_text = font_large.render("Victoire !", True, (0, 255, 0))
+            else:
+                end_text = font_large.render("Défaite", True, (255, 0, 0))
+            map.screen.blit(end_text, (SCREEN_WIDTH//2 - end_text.get_width()//2, SCREEN_HEIGHT//2 - end_text.get_height()//2))
+
+            # Press any key to return to menu
+            if any(map.keys):
+                map.niveau = 0
         
 
 

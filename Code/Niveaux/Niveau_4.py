@@ -292,3 +292,5 @@ def init_lvl_4(map):
     map.boss = MonstrePollution(1050, 150)
     map.joueur.hp = 5
     map.joueur.max_hp = 5
+    map.game_over = False
+    map.victory = False
