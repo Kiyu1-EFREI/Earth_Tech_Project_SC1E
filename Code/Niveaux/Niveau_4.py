@@ -2,8 +2,7 @@ import pygame
 import random
 from Code.Utils.Utils import create_element, gestion_eau
 from Code.Utils.classes import Player, ObjetClass
-from Code.Utils.Utils import create_element
-from Code.Utils.classes import Player
+
 # Constantes de jeu
 GRAVITY = 800  # Valeur de 'g' dans l'équation
 SCREEN_WIDTH = 1280
@@ -47,6 +46,7 @@ class PollutionCloud(pygame.sprite.Sprite):
         # Supprimer si le nuage sort de l'écran
         if self.rect.top > SCREEN_HEIGHT or self.rect.right < 0:
             self.kill()
+
 class MagicSeed(pygame.sprite.Sprite):
     def __init__(self, x, y, vx, vy0, platforms=None):
         super().__init__()
@@ -111,7 +111,8 @@ class MonstrePollution(pygame.sprite.Sprite):
     def __init__(self, x, y, platforms=None):
         super().__init__()
         self.image = pygame.Surface((140, 140), pygame.SRCALPHA)
-        pygame.draw.circle(self.image, (60, 60, 60,0), (70, 70), 70)
+        # Rendu invisible en mettant l'alpha à 0
+        pygame.draw.circle(self.image, (60, 60, 60, 0), (70, 70), 70)
         self.rect = self.image.get_rect(center=(x, y))
 
         self.clouds = pygame.sprite.Group()
@@ -214,7 +215,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         if not valid_target:
             target_x = random.randint(350, 1260)  # À droite du wall
             target_y = random.randint(100, GROUND_Y - 100)
-            
+
         dx = target_x - origin_x
         dy = target_y - origin_y
 
