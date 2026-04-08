@@ -92,7 +92,9 @@ def mouvement(map):
 # fonction qui permet de faire tourner la map
 def run_map(map):
     map.keys = pygame.key.get_pressed()
-    map.aleatoire.time += 1
+    map.aleatoire.time += map.aleatoire.speed
+    map.time += 1
+
 
     mouvement(map)
     interaction(map)
@@ -120,11 +122,6 @@ def run_map(map):
     draw_popup(map.screen, map)
     # Afficher la défaite si active
     draw_defeat(map.screen, map)
-    if map.niveau == 2:
-        font = pygame.font.Font(None, 36)
-        extinguished_text = f"Flammes éteintes: {map.level_2_extinguished}/20"
-        text = font.render(extinguished_text, True, (255, 200, 100))
-        map.screen.blit(text, (10, 70))
 
 
     if map.niveau == 3:
@@ -153,6 +150,7 @@ def run_map(map):
     elif map.niveau == 2:
         generation_fire(map)
         gestion_score_bare(map, (map.score * 100)/15)
+        map.reste_time = gestion_timer(map, map.time_start)
     elif map.niveau == 3:
         update_lvl_3(map)
         gestion_pollution_bare(map)
@@ -224,7 +222,7 @@ def init_map(niveau, screen):
     element = element_map_general() | element_lvl
 
     joueur = ObjetClass(pygame.Rect(160, 380, 50, 50), "player")
-    map = MapClass(0.7, 7, 0.8, 0.8, screen, joueur)
+    map = MapClass(0.7, 7, 0.8, 0.8, screen, joueur)#friction 0.7 -> 0.99 | vitesse max 7 -> 12
     map.vx = 0
     map.vy = 0
     map.direction = 0

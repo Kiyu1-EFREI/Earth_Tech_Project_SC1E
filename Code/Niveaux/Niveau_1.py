@@ -1,3 +1,4 @@
+
 import pygame
 import math
 from Code.Utils.Utils import *
@@ -53,7 +54,7 @@ def avancer_oiseau(map, vitesse):
 # element specifique au niveau 1
 def element_lvl_1():
     element = {
-        "dirt_pile" : [[115, 68, 3, 2],[72, 68, 3, 2],[38, 68, 3, 2]]
+        "dirt_pile" : [[115, 66, 4, 4],[72, 66, 4, 4],[38, 66, 4, 4]]
     }
     return element
 
