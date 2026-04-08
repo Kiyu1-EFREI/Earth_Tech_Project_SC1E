@@ -2,6 +2,7 @@ from Utils.map import*
 from Menu.menu import*
 import pygame
 from Code.Niveaux.Niveau_4 import init_lvl_4
+from codecarbon import EmissionsTracker
 # structure pygame
 pygame.init()
 clock = pygame.time.Clock()
@@ -37,52 +38,54 @@ else:
 #resize(element, screen.get_width(), screen.get_height(), 1280, 720)
 
 # Boucle principale de Pygame
+tracker = EmissionsTracker()
+tracker.start()
+try:
+    run = True
+    while run:
+        events = pygame.event.get()
+        click = False
 
+        for event in events:
+            if event.type == pygame.QUIT:
+                run = False
+            elif event.type == pygame.VIDEORESIZE:
+                new_width = event.w
+                new_height = event.h
+                screen = pygame.display.set_mode((new_width, new_height), pygame.RESIZABLE)
+                resize(element, screen.get_width(), screen.get_height(), old_w, old_h)
+                old_w = new_width
+                old_h = new_height
 
-run = True
-while run:
-    events = pygame.event.get()
-    click = False
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                click = True
 
-    for event in events:
-        if event.type == pygame.QUIT:
-            run = False
-        elif event.type == pygame.VIDEORESIZE:
-            new_width = event.w
-            new_height = event.h
-            screen = pygame.display.set_mode((new_width, new_height), pygame.RESIZABLE)
-            resize(element, screen.get_width(), screen.get_height(), old_w, old_h)
-            old_w = new_width
-            old_h = new_height
+        if niveau == 4 and 'map' in locals():
+            run_map(map)
+            new_niveau = map.niveau
 
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            click = True
-
-    if niveau == 4 and 'map' in locals():
-        run_map(map)
-        new_niveau = map.niveau
-
-    elif niveau > 0:
-        map.click = click
-        run_map(map)
-        new_niveau = map.niveau
-    else:
-        new_niveau = run_menu(screen, element, niveau, click, continue_click)
-
-    if niveau != 4 and niveau != new_niveau:
-        niveau = new_niveau
-        if niveau > 0:
-            map = init_map(niveau, screen)
-            map.screen = screen
-            map_resize(map, screen.get_width(), screen.get_height(), 1280, 720)
-        elif niveau == 0:
-            run = False
+        elif niveau > 0:
+            map.click = click
+            run_map(map)
+            new_niveau = map.niveau
         else:
-            element = init_menu(niveau, police)
-            resize(element, screen.get_width(), screen.get_height(), 1280, 720)
+            new_niveau = run_menu(screen, element, niveau, click, continue_click)
 
-    continue_click = click
-    pygame.display.flip()
-    clock.tick(60)
+        if niveau != 4 and niveau != new_niveau:
+            niveau = new_niveau
+            if niveau > 0:
+                map = init_map(niveau, screen)
+                map.screen = screen
+                map_resize(map, screen.get_width(), screen.get_height(), 1280, 720)
+            elif niveau == 0:
+                run = False
+            else:
+                element = init_menu(niveau, police)
+                resize(element, screen.get_width(), screen.get_height(), 1280, 720)
 
+        continue_click = click
+        pygame.display.flip()
+        clock.tick(60)
+finally:
+    tracker.stop()
 pygame.quit()
