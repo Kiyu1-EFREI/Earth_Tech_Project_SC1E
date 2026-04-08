@@ -26,17 +26,16 @@ def utilisation_lvl_2(map, e):
             if e in map.fire:
                 map.fire.remove(e)
             map.score -= 1
-            map.level_2_extinguished += 1
 
             # Vérifier si le joueur a gagné
-            if map.level_2_extinguished >= 20:
+            if not(map.reste_time) and len(map.fire) == 0:
                 map.fire.clear()  # Fait disparaître toutes les flammes restantes
                 map.popup_active = True
                 map.popup_timer = 1000
 
 # permet de gerer les feu
 def generation_fire(map):
-    if map.level_2_extinguished >= 20 or getattr(map, 'defeat_active', False):
+    if not(map.reste_time) or getattr(map, 'defeat_active', False):
         return
     if len(map.fire) <= 1:
         nb_fire = 1
@@ -70,5 +69,5 @@ def init_lvl_2(map):
     map.aleatoire.min = 3
     map.aleatoire.max = 6
     map.score = 3
-    map.level_2_extinguished = 0
+    map.time_start = 150 # 2:30
     map.defeat_active = False

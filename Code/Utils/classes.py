@@ -12,6 +12,9 @@ import pygame
 
 class MapClass:
     def __init__(self, friction, vitesse_max, gravite, acceleration, screen, joueur):
+        self.time = 0
+        self.reste_time = True
+        self.time_start = 0
         self.keys = []
         self.aleatoire = AleatoireClass(1, 100, 2000)
         self.click = False
@@ -46,7 +49,6 @@ class MapClass:
         self.couleurs_dechets = {}
         self.popup_active = False
         self.popup_timer = 0
-        self.level_2_extinguished = 0
 
 
 # Class pour cree des element, avec ou sans animation, qui vont etre ou pas, afficher a l'ecran
@@ -67,6 +69,7 @@ class ObjetClass:
 # Classe pour gerer l'aleatoire
 class AleatoireClass:
     def __init__(self, s, min, max):
+        self.speed = 1
         self.nb_s = s
         self.min = min
         self.max = max

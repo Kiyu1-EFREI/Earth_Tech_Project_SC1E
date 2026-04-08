@@ -29,7 +29,7 @@ def draw_element(screen, element): # element -> list d'objet de la class ObjetCl
 
             elif len(el.frame) == 0:
                 # Rendre transparent les rectangles sans images
-                if el.type not in ["platform", "wall", "water_tank", "score_bare", "pollution_bare","water"]:
+                if el.type not in ["platform", "wall", "water_tank", "pollution_bare","water"]:
                     pygame.draw.rect(screen, el.color, el.rect)
                 else:
                     # Créer un rectangle semi-transparent pour les éléments de jeu
@@ -318,3 +318,24 @@ def draw_defeat(screen, map):
         if map.click:
             map.niveau = -2
             map.defeat_active = False
+
+def gestion_timer(map, max_time): #max_time en seconde
+    time = map.time/60
+    timer_value = max_time - time
+    if timer_value <= 0:
+        timer_value = 0
+    minutes = round(timer_value // 60)
+    seconds = int(timer_value % 60)
+    if seconds < 10:
+        seconds = '0' + str(seconds)
+
+    font = pygame.font.Font(None, 36)
+    timer_text = f"{minutes}:{seconds}"
+    text = font.render(timer_text, True, (255, 255, 255))
+    map.screen.blit(text, (10, 70))
+
+    if timer_value <= 0:
+        return False
+    else:
+        return True
+
