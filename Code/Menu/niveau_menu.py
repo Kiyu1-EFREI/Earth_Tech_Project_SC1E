@@ -9,6 +9,6 @@ def init_lvl_menu(police):
         ButtonClass(pygame.Rect(425, 320, 200, 200), "2", pygame.font.SysFont(police, 200), 2),
         ButtonClass(pygame.Rect(655, 320, 200, 200), "3", pygame.font.SysFont(police, 200), 3),
         ButtonClass(pygame.Rect(885, 320, 200, 200), "4", pygame.font.SysFont(police, 200), 4),
-        ButtonClass(pygame.Rect(1220, 10, 50, 50), "Asset/menu/parametre.png", pygame.font.SysFont(police, 200), -3, "Asset/menu/parametre_hover.png")
+        ButtonClass(pygame.Rect(1220, 10, 50, 50), "Asset/menu/upgrade.png", pygame.font.SysFont(police, 200), -3)
     ]
     return element

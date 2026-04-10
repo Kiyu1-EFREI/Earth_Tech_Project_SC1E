@@ -207,7 +207,7 @@ def run_map(map):
 
 
 # fonction pour initialiser la map
-def init_map(niveau, screen):
+def init_map(niveau, screen, EOTF_list):
     if niveau == 1:
         element_lvl = element_lvl_1()
     elif niveau == 2:
@@ -222,7 +222,7 @@ def init_map(niveau, screen):
     element = element_map_general() | element_lvl
 
     joueur = ObjetClass(pygame.Rect(160, 380, 50, 50), "player")
-    map = MapClass(0.7, 7, 0.8, 0.8, screen, joueur)#friction 0.7 -> 0.99 | vitesse max 7 -> 12
+    map = MapClass(0.7, 7, 0.8, 0.8, screen, joueur)
     map.vx = 0
     map.vy = 0
     map.direction = 0
@@ -277,6 +277,8 @@ def init_map(niveau, screen):
         init_lvl_4(map)
         map.background_elements = map.element
 
+    map_upgrade_applid(map, EOTF_list)
+
     return map
 
 # fonction resize map
@@ -285,3 +287,11 @@ def map_resize(map, screen_width, screen_height, old_w, old_h):
     resize(map.oiseau, screen_width, screen_height, old_w, old_h)
     resize(map.fire, screen_width, screen_height, old_w, old_h)
     resize(map.joueur, screen_width, screen_height, old_w, old_h)
+
+def map_upgrade_applid(map, EOTF_list):
+    if EOTF_list[0]:
+        map.vitesse_max = 12
+    if EOTF_list[1]:
+        map.friction = 0.99
+    if EOTF_list[2]:
+        map.time_start *= 2

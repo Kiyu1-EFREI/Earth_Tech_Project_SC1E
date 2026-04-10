@@ -164,16 +164,24 @@ def draw_botton(screen, element, click, niveau, continue_click):
             col = botton.color
 
         if ".png" in botton.text:
-            # Charger l'image
+            # Surface avec alpha
+            width = botton.rect.width
+            height = botton.rect.height
+
             if is_hover and type(botton.hover) == str:
-                img = pygame.image.load(botton.hover).convert_alpha()
+                if ".png" in botton.hover:
+                    img = pygame.image.load(botton.hover).convert_alpha()
+                else:
+                    width += 20
+                    height += 20
+                    botton.rect.x -= 10
+                    botton.rect.y -= 10
+                    img = pygame.image.load(botton.text).convert_alpha()
             else:
                 img = pygame.image.load(botton.text).convert_alpha()
-            img = pygame.transform.smoothscale(img, (botton.rect.width, botton.rect.height))
+            img = pygame.transform.smoothscale(img, (width, height))
 
-            # Surface avec alpha
-            rounded = pygame.Surface((botton.rect.width, botton.rect.height), pygame.SRCALPHA)
-
+            rounded = pygame.Surface((width, height), pygame.SRCALPHA)
             # Dessiner un rectangle arrondi blanc (servira de masque)
             pygame.draw.rect(
                 rounded,
@@ -187,9 +195,11 @@ def draw_botton(screen, element, click, niveau, continue_click):
 
             # Afficher
             screen.blit(rounded, botton.rect)
-
+            if is_hover and type(botton.hover) == str and not(".png" in botton.hover):
+                botton.rect.x += 10
+                botton.rect.y += 10
         else:
-            if col != None:
+            if col != None and type(col) == tuple:
                 pygame.draw.rect(screen, col, botton.rect, border_radius=botton.border_r)
             txt = botton.police.render(botton.text, True, botton.text_color)
             screen.blit(txt, txt.get_rect(center=botton.rect.center))
