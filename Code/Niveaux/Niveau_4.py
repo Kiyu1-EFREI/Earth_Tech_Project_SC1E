@@ -52,7 +52,7 @@ class MagicSeed(pygame.sprite.Sprite):
         super().__init__()
         # Visuel de la graine
         self.image = pygame.image.load("./Asset/maps/graine_magique.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (30, 30))
+        self.image = pygame.transform.scale(self.image, (40, 40))
         self.rect = self.image.get_rect(center=(x, y))
 
         # Variables de position précises (float)
