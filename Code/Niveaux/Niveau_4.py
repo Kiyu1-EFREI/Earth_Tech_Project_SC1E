@@ -373,3 +373,4 @@ def init_lvl_4(map):
     map.joueur.max_hp = 5
     map.game_over = False
     map.victory = False
+    map.seed = False

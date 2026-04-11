@@ -110,13 +110,17 @@ def run_map(map):
         draw_list.append(map.pollution_bare)
     draw_element(map.screen, draw_list)
 
-    if map.niveau == 1 and getattr(map, 'seed_box', None) is not None:
+    if (map.niveau == 1 or map.niveau == 4) and getattr(map, 'seed_box', None) is not None:
         pygame.draw.rect(map.screen, (30, 30, 30), map.seed_box)
         pygame.draw.rect(map.screen, (255, 255, 255), map.seed_box, 3, border_radius=8)
-        if map.seed:
-            cx, cy = map.seed_box.center
-            pygame.draw.circle(map.screen, (140, 90, 30), (cx, cy), 14)
-            pygame.draw.circle(map.screen, (160, 110, 55), (cx, cy + 2), 10)
+        if map.seed and map.niveau == 1:
+            img_path = "./Asset/maps/graine.png"
+            img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (40, 40))
+            map.screen.blit(img, (map.seed_box.x + 5, map.seed_box.y + 5))
+        elif map.seed and map.niveau == 4:
+            img_path = "./Asset/maps/graine_magique.png"
+            img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (40, 40))
+            map.screen.blit(img, (map.seed_box.x + 5, map.seed_box.y + 5))
 
     # Afficher le popup si actif
     draw_popup(map.screen, map)
@@ -161,14 +165,16 @@ def run_map(map):
             map.boss.update(dt, map.joueur)
 
         # Check seed pickup
-        if map.press_e:
+        if map.press_e and not map.seed:
             seed_hits = pygame.sprite.spritecollide(map.joueur, map.boss.seeds, True)
             if seed_hits:
-                map.boss.become_vulnerable()
+                map.seed = True
 
         # Check attack on boss
-        if map.keys[pygame.K_e] and map.joueur.rect.colliderect(map.boss.rect) and map.boss.vulnerable:
+        if map.keys[pygame.K_e] and map.joueur.rect.colliderect(map.boss.rect) and map.seed:
+            map.boss.become_vulnerable()
             map.boss.take_damage(1)
+            map.seed = False
 
         # Draw boss
         map.boss.draw(map.screen)
@@ -255,7 +261,7 @@ def init_map(niveau, screen, EOTF_list):
     map.score_bare = ObjetClass(pygame.Rect(10, 10, 0, 25), "score_bare")
     map.score_bare.color = (0, 0, 0)
 
-    if niveau == 1:
+    if niveau == 1 or niveau == 4:
         map.seed_box = pygame.Rect(15, 660, 50, 50)
     else:
         map.seed_box = None
