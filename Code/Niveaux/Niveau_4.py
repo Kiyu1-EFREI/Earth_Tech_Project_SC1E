@@ -72,8 +72,8 @@ class MagicSeed(pygame.sprite.Sprite):
                 Retourne le rect de la plateforme où la graine atterrit, ou None.
         """
         # Vérifier collision avec le sol
-        if self.pos_y >= GROUND_Y - self.rect.height // 2:
-            return pygame.Rect(0, GROUND_Y, SCREEN_WIDTH, 100)  # Pseudo-rect du sol
+        if self.pos_y >= 700 - self.rect.height // 2:  # Sol à y=700
+            return pygame.Rect(0, 700, SCREEN_WIDTH, 100)   # Pseudo-rect du sol
 
         # Vérifier collision avec les plateformes
         for platform in self.platforms:
@@ -110,9 +110,16 @@ class MagicSeed(pygame.sprite.Sprite):
 class MonstrePollution(pygame.sprite.Sprite):
     def __init__(self, x, y, platforms=None):
         super().__init__()
-        self.image = pygame.Surface((140, 140), pygame.SRCALPHA)
-        # Rendu invisible en mettant l'alpha à 0
-        pygame.draw.circle(self.image, (60, 60, 60, 0), (70, 70), 70)
+        # Charger les frames d'animation
+        self.frame = []
+        for i in range(1, 11):
+            img = pygame.image.load(f"./Asset/Monstre/image-removebg-preview ({i}).png").convert_alpha()
+            img = pygame.transform.scale(img, (140, 140))
+            self.frame.append(img)
+        self.anim_index = 0.0
+        self.anim_speed = 0.05  # Vitesse d'animation
+
+        self.image = self.frame[0]
         self.rect = self.image.get_rect(center=(x, y))
 
         self.clouds = pygame.sprite.Group()
@@ -130,12 +137,12 @@ class MonstrePollution(pygame.sprite.Sprite):
         self.fire_timer = 0.0
 
         # paramètres de tir
-        self.min_flight_time = 3.0
-        self.max_flight_time = 5.0
+        self.min_flight_time = 1.0
+        self.max_flight_time = 2.0
 
         # Timer pour la graine magique (aléatoire autour de 15 secondes)
         self.seed_timer = 0.0
-        self.seed_interval = random.uniform(12, 18)
+        self.seed_interval = random.uniform(12, 16)
 
         # Stocker les plateformes pour les collisions des graines
         self.platforms = platforms if platforms else []
@@ -238,6 +245,9 @@ class MonstrePollution(pygame.sprite.Sprite):
         if not self.alive:
             return
 
+        self.anim_index += self.anim_speed
+        self.image = self.frame[int(self.anim_index) % len(self.frame)]
+
         self.fire_timer += dt
         if self.fire_timer >= self.fire_interval:
             self.fire_timer = 0.0
@@ -337,7 +347,7 @@ class MonstrePollution(pygame.sprite.Sprite):
 # Fonction pour obtenir les éléments du niveau 4
 def element_lvl_4():
     element = {
-        "boss": [[96, 1, 30, 25]]
+        #"boss": [[96, 1, 30, 25]]
     }
     return element
 
@@ -358,7 +368,7 @@ def init_lvl_4(map):
         {'rect': pygame.Rect(96*10, 41*10, 12*10, 2*10)}
     ]
     # Créer le boss avec la classe MonstrePollution
-    map.boss = MonstrePollution(1050, 150, platforms=platforms)
+    map.boss = MonstrePollution(1120, 185, platforms=platforms)
     map.joueur.hp = 5
     map.joueur.max_hp = 5
     map.game_over = False
