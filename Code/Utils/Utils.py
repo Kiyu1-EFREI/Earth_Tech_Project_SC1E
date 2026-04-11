@@ -348,4 +348,3 @@ def gestion_timer(map, max_time): #max_time en seconde
         return False
     else:
         return True
-
