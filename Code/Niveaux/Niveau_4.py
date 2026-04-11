@@ -14,8 +14,8 @@ class PollutionCloud(pygame.sprite.Sprite):
     def __init__(self, x, y, vx, vy0):
         super().__init__()
         # Visuel du nuage
-        self.image = pygame.Surface((30, 30), pygame.SRCALPHA)
-        pygame.draw.circle(self.image, (100, 100, 100), (15, 15), 15)  # Gris polluant
+        self.image = pygame.image.load("./Asset/maps/projectile.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (45, 40))
         self.rect = self.image.get_rect(center=(x, y))
 
         # Variables de position précises (float) pour éviter les erreurs d'arrondi
@@ -51,8 +51,8 @@ class MagicSeed(pygame.sprite.Sprite):
     def __init__(self, x, y, vx, vy0, platforms=None):
         super().__init__()
         # Visuel de la graine
-        self.image = pygame.Surface((20, 20), pygame.SRCALPHA)
-        pygame.draw.circle(self.image, (50, 200, 50), (10, 10), 10)  # Vert magique
+        self.image = pygame.image.load("./Asset/maps/graine_magique.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (30, 30))
         self.rect = self.image.get_rect(center=(x, y))
 
         # Variables de position précises (float)
