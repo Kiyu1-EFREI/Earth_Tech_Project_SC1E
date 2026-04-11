@@ -69,7 +69,7 @@ try:
         else:
             new_niveau = run_menu(screen, element, niveau, click, continue_click, EOTF_list)
 
-        if niveau != 4 and niveau != new_niveau:
+        if niveau != new_niveau:
             if new_niveau != None:
                 niveau = new_niveau
             if niveau > 0:

@@ -198,30 +198,29 @@ class MonstrePollution(pygame.sprite.Sprite):
         origin_y = self.rect.centery
 
         # Zone d'exclusion: wall [0, 45, 30, 25] en unités - convertir en pixels
-        wall_x_min = 0 * 10
+
         wall_x_max = 30 * 10  # 300 pixels
-        wall_y_min = 45 * 10  # 450 pixels
-        wall_y_max = (45 + 25) * 10  # 700 pixels
+        wall_y_top = 45 * 10  # 450 pixels
 
         # Générer une position cible valide (pas dans le wall)
         valid_target = False
         attempts = 0
-        max_attempts = 10
+        max_attempts = 15
 
         while not valid_target and attempts < max_attempts:
-            target_x = random.randint(20, 1260)
-            target_y = random.randint(100, GROUND_Y - 100)
+            target_x = random.randint(20, origin_x - 100)
+            target_y = random.randint(100, GROUND_Y - 50)
 
             # Vérifier que la position ne tombe pas dans le wall
-            if not (wall_x_min <= target_x <= wall_x_max and wall_y_min <= target_y <= wall_y_max):
+            # Si on vise dans la zone horizontale du bloc de gauche
+            if target_x <= wall_x_max:
+                # On s'assure que la cible est AU-DESSUS du bloc (pour atterrir dessus)
+                if target_y <= wall_y_top:
+                    valid_target = True
+            else:
                 valid_target = True
 
             attempts += 1
-
-        # Si on n'a pas pu trouver une position valide, utiliser une position sûre
-        if not valid_target:
-            target_x = random.randint(350, 1260)  # À droite du wall
-            target_y = random.randint(100, GROUND_Y - 100)
 
         dx = target_x - origin_x
         dy = target_y - origin_y
@@ -355,6 +354,7 @@ def element_lvl_4():
 def init_lvl_4(map):
     # Créer la liste des plateformes pour les collisions des graines
     platforms = [
+        {'rect': pygame.Rect(0, 45 * 10, 30 * 10, 25 * 10)},
         {'rect': pygame.Rect(89*10, 60*10, 12*10, 2*10)},
         {'rect': pygame.Rect(45*10, 60*10, 12*10, 2*10)},
         {'rect': pygame.Rect(67*10, 50*10, 12*10, 2*10)},

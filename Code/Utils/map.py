@@ -186,14 +186,12 @@ def run_map(map):
         # Check game over
         if map.joueur.hp <= 0 and not map.game_over:
             map.game_over = True
+            map.defeat_active = True
 
         # Display end message
-        if map.game_over or map.victory:
+        if map.victory:
             font_large = pygame.font.Font(None, 72)
-            if map.victory:
-                end_text = font_large.render("Victoire !", True, (0, 255, 0))
-            else:
-                end_text = font_large.render("Défaite", True, (255, 0, 0))
+            end_text = font_large.render("Victoire !", True, (0, 255, 0))
             screen_width = map.screen.get_width()
             screen_height = map.screen.get_height()
             map.screen.blit(end_text, (screen_width//2 - end_text.get_width()//2, screen_height//2 - end_text.get_height()//2))
