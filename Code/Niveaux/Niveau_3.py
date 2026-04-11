@@ -3,19 +3,14 @@ from random import choice
 from Code.Utils.Utils import aleatoire
 from Code.Utils.classes import ObjetClass
 
+
 def element_lvl_3():
-    element = {
-        "poubelle_plastique": [
-            [70, 50, 100, 100]
-        ],
-        "poubelle_verre": [
-            [180, 50, 100, 100]
-        ],
-        "poubelle_reste": [
-            [290, 50, 100, 100]
-        ]
+    # Définit le lieu de spawn des poubelles
+    return {
+        "poubelle_plastique": [[40, 60, 10, 12]],
+        "poubelle_verre": [[60, 60, 10, 12]],
+        "poubelle_reste": [[80, 60, 10, 12]]
     }
-    return element
 
 def init_lvl_3(map):
     map.water = 0
@@ -23,34 +18,33 @@ def init_lvl_3(map):
     map.pollution = 0
     map.temps_restant = 60 * 60
     map.dechets = []
-    map.dechet_transporte = None
-    map.timer_apparition = 0
-    map.intervalle_apparition = 120
-    map.types_dechets = ["plastique", "verre", "alimentaire"]
+    map.types_dechets = ["plastique", "verre", "reste"]
+
+    map.joueur.inventory = {"plastique": 0, "verre": 0, "reste": 0}
+
     map.couleurs_dechets = {
-        "plastique": (255,255,0),
-        "verre": (0,255,0),
-        "alimentaire": (255,0,0)
+        "plastique": (255, 255, 0),
+        "verre": (0, 255, 0),
+        "reste": (255, 0, 0)
     }
+
     map.poubelles = []
-    map.joueur.inventory = {"plastique": 0, "verre": 0, "alimentaire": 0}
-    map.aleatoire.nb_s = 2
-    map.aleatoire.min = 2
-    map.aleatoire.max = 4
+    map.aleatoire.nb_s, map.aleatoire.min, map.aleatoire.max = 2, 2, 4
     map.pollution_bare = ObjetClass(pygame.Rect(10, 40, 200, 25), "pollution_bare")
     map.pollution_bare.color = (255, 0, 0)
-    for e in map.element:
-        if e.type in ["poubelle_plastique", "poubelle_verre", "poubelle_reste"]:
-            map.poubelles.append(e)
-            if e.type == "poubelle_plastique":
-                e.type_dechet = "plastique"
-                e.color = (255,255,0)
-            elif e.type == "poubelle_verre":
-                e.type_dechet = "verre"
-                e.color = (0, 255, 0)
-            elif e.type == "poubelle_reste":
-                e.type_dechet = "alimentaire"
-                e.color = (255, 0, 0)
+
+    types_poubelles_attendus = ["poubelle_plastique", "poubelle_verre", "poubelle_reste"]
+
+    for poubelle in map.element:
+        if poubelle.type in types_poubelles_attendus:
+            map.poubelles.append(poubelle)
+            # Assignation de la logique de tri
+            if poubelle.type == "poubelle_plastique":
+                poubelle.type_dechet = "plastique"
+            elif poubelle.type == "poubelle_verre":
+                poubelle.type_dechet = "verre"
+            elif poubelle.type == "poubelle_reste":
+                poubelle.type_dechet = "reste"
 
 def utilisation_lvl_3(map, e):
     if e.type in ["poubelle_plastique", "poubelle_verre", "poubelle_reste"]:
@@ -63,54 +57,40 @@ def utilisation_lvl_3(map, e):
             map.interaction = False
 
     elif e.type == "dechet":
-        current_count = sum(map.joueur.inventory.values())
-        if current_count == 0:
-            map.joueur.inventory = {"plastique": 0, "verre": 0, "alimentaire": 0}
+        if sum(map.joueur.inventory.values()) == 0:
+            map.joueur.inventory = {"plastique": 0, "verre": 0, "reste": 0}
             map.joueur.inventory[e.type_dechet] = 1
-            # Only remove the platform directly under the picked-up trash
-            for p in list(map.element):
-                if p.type == "platform" and abs(p.rect.top - e.rect.bottom) < 5 and p.rect.left <= e.rect.centerx <= p.rect.right:
-                    map.element.remove(p)
-                    break
             e.visible = False
-            if e in map.dechets:
-                map.dechets.remove(e)
+            if e in map.dechets: map.dechets.remove(e)
             map.interaction = True
-        else:
-            map.interaction = False
+
 
 def generer_dechet(map):
-    if len(map.dechets) < 10 and map.types_dechets:
+    # Verification que la plateforme est libre
+    if len(map.dechets) < 10:
         type_dechet = choice(map.types_dechets)
-        couleur = map.couleurs_dechets[type_dechet]
-
         plateformes = [p for p in map.element if p.type == "platform"]
-        if plateformes :
-            p = choice(plateformes)
+        # On ne garde que les plateformes sans déchet déjà présent
+        libres = [p for p in plateformes if
+                  not any(abs(d.rect.x - (p.rect.x + (p.rect.width - 50) // 2)) < 10 for d in map.dechets)]
+
+        if libres:
+            p = choice(libres)
             x = p.rect.x + (p.rect.width - 50) // 2
             y = p.rect.y - 50
             dechet = ObjetClass(pygame.Rect(x, y, 50, 50), "dechet")
             dechet.type_dechet = type_dechet
-            dechet.color = couleur
-            file_names = {
-                "plastique": "dechet_plastique.png",
-                "verre": "dechet_verre.png",
-                "alimentaire": "dechet_reste.png"
-            }
-            img_name = file_names[type_dechet]
-            dechet.frame = [pygame.transform.scale(pygame.image.load(f"./Asset/maps/{img_name}").convert_alpha(), (50, 50))]
+
+            # On s'assure que le nom du fichier image est correct
+            img_name = f"dechet_{type_dechet}.png"
+            dechet.frame = [
+                pygame.transform.scale(pygame.image.load(f"./Asset/maps/{img_name}").convert_alpha(), (50, 50))]
             dechet.visible = True
             map.dechets.append(dechet)
 
 
 def update_lvl_3(map):
-    if not map.types_dechets:  # Si types_dechets n'est pas initialisé, ne rien faire
-        return
-    if aleatoire(map.aleatoire):
-        generer_dechet(map)
-    gestion_pollution(map)
-    if map.pollution >= 100 or map.score >= 20:
-        map.niveau = 0
-
-def gestion_pollution(map):
-    map.pollution = min(100, map.pollution + 0.1)
+    if not hasattr(map, 'types_dechets'): return
+    if aleatoire(map.aleatoire): generer_dechet(map)
+    map.pollution = min(150, map.pollution + 0.1)
+    if map.pollution >= 150 or map.score >= 20: map.niveau = 0
