@@ -225,7 +225,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         dx = target_x - origin_x
         dy = target_y - origin_y
 
-        flight_time = random.uniform(1.0, 2.0)
+        flight_time = random.uniform(1.5, 2.0)
 
         vx = dx / flight_time
         vy0 = (dy - 0.5 * GRAVITY * (flight_time ** 2)) / flight_time
@@ -255,7 +255,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         self.seed_timer += dt
         if self.seed_timer >= self.seed_interval:
             self.seed_timer = 0.0
-            self.seed_interval = random.uniform(12, 18)  # Reset timer aléatoire
+            self.seed_interval = random.uniform(12, 16)  # Reset timer aléatoire
             self.launch_seed()
 
         self.clouds.update(dt)
