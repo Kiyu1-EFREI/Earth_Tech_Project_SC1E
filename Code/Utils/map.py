@@ -133,8 +133,10 @@ def run_map(map):
     draw_popup(map.screen, map)
     # Afficher la défaite si active
     draw_defeat(map.screen, map)
+    # Afficher la victoire si active
+    draw_victory(map.screen, map)
     # Si défaite est active, arrêter le gameplay
-    if getattr(map, 'defeat_active', False):
+    if getattr(map, 'defeat_active', False) or getattr(map, 'victory', False):
         return
 
 
@@ -203,18 +205,6 @@ def run_map(map):
         if map.joueur.hp <= 0 and not map.game_over:
             map.game_over = True
             map.defeat_active = True
-
-        # Display end message
-        if map.victory:
-            font_large = pygame.font.Font(None, 72)
-            end_text = font_large.render("Victoire !", True, (0, 255, 0))
-            screen_width = map.screen.get_width()
-            screen_height = map.screen.get_height()
-            map.screen.blit(end_text, (screen_width//2 - end_text.get_width()//2, screen_height//2 - end_text.get_height()//2))
-
-            # Press any key to return to menu
-            if any(map.keys):
-                map.niveau = 0
         
 
 

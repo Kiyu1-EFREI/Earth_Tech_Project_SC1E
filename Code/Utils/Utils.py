@@ -341,7 +341,53 @@ def draw_defeat(screen, map):
         if map.click:
             map.niveau = -2
             map.defeat_active = False
+def draw_victory(screen, map):
+    if not getattr(map, 'victory', False):
+        return
 
+    # Créer un overlay sombre semi-transparent
+    overlay = pygame.Surface((screen.get_width(), screen.get_height()), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 180))
+    screen.blit(overlay, (0, 0))
+
+    # Afficher "Victoire !" en gros au milieu
+    font = pygame.font.Font(None, 150)
+    text = font.render("Victoire !", True, (0, 255, 0))
+    rect = text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 50))
+    screen.blit(text, rect)
+
+    # Message de victoire
+    victory_message = ("Félicitations, Héros de la Terre !\n"
+                       "Grâce à ton courage et à tes actions, le Monstre de Pollution a disparu.\n"
+                       "Regarde : les fleurs repoussent, l'air devient pur et les animaux reviennent\n"
+                       "habiter dans une forêt protégée. Tu as prouvé que même de petits gestes\n"
+                       "peuvent sauver tout un monde. N'oublie jamais qu'en prenant soin de la\n"
+                       "nature dans la vraie vie, tu as le pouvoir de transformer la planète pour de bon.\n"
+                       "La nature a repris ses droits grâce à TOI !")
+
+    # Diviser le texte en plusieurs lignes pour l'afficher
+    font_small = pygame.font.Font(None, 20)
+    lines = victory_message.split('\n')
+    y_offset = screen.get_height() // 2 + 50
+
+    for line in lines:
+        if line.strip():
+            text_surface = font_small.render(line, True, (255, 255, 255))
+            screen.blit(text_surface, (screen.get_width() // 2 - text_surface.get_width() // 2, y_offset))
+            y_offset += 30
+        else:
+            y_offset += 15
+
+    # Petit texte d'instruction
+    font_click = pygame.font.Font(None, 40)
+    click_text = font_click.render("Cliquez pour revenir au menu", True, (255, 255, 0))
+    click_rect = click_text.get_rect(center=(screen.get_width() // 2, screen.get_height() - 100))
+    screen.blit(click_text, click_rect)
+
+    # Si on clique n'importe où, on retourne au menu (niveau 0)
+    if map.click:
+        map.niveau = -2
+        map.victory = False
 
 def draw_level_intro(screen, map):
     if not map.level_intro_active:
