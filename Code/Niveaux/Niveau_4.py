@@ -125,7 +125,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         self.clouds = pygame.sprite.Group()
         self.seeds = pygame.sprite.Group()
 
-        self.max_hp = 7
+        self.max_hp = 1
         self.hp = self.max_hp
         self.vulnerable = False
         self.alive = True

@@ -353,7 +353,7 @@ def draw_victory(screen, map):
     # Afficher "Victoire !" en gros au milieu
     font = pygame.font.Font(None, 150)
     text = font.render("Victoire !", True, (0, 255, 0))
-    rect = text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 50))
+    rect = text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 90))
     screen.blit(text, rect)
 
     # Message de victoire
@@ -366,9 +366,9 @@ def draw_victory(screen, map):
                        "La nature a repris ses droits grâce à TOI !")
 
     # Diviser le texte en plusieurs lignes pour l'afficher
-    font_small = pygame.font.Font(None, 20)
+    font_small = pygame.font.Font(None, 25)
     lines = victory_message.split('\n')
-    y_offset = screen.get_height() // 2 + 50
+    y_offset = screen.get_height() // 2 + 15
 
     for line in lines:
         if line.strip():
