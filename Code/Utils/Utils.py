@@ -136,10 +136,6 @@ def gestion_eau(map, value):
 def gestion_score_bare(map, value): # value en %
     map.score_bare.rect.width = 200 * (value / 100)
 
-# fonction qui gere la taille de la barre de pollution
-def gestion_pollution_bare(map):
-    if hasattr(map, 'pollution_bare'):
-        map.pollution_bare.rect.width = 200 * (map.pollution / 100)
 
 # fonction qui gere l'aleatoire
 def aleatoire(a):

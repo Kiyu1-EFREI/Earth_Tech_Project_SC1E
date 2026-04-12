@@ -113,8 +113,6 @@ def run_map(map):
 
     map.joueur.frame = map.player_img[map.d_save][map.en_contact]
     draw_list = map.element + map.oiseau + map.fire + map.dechets + [map.water_tube, map.score_bare, map.joueur]
-    if hasattr(map, 'pollution_bare'):
-        draw_list.append(map.pollution_bare)
     draw_element(map.screen, draw_list)
 
     if (map.niveau == 1 or map.niveau == 3 or map.niveau == 4) and getattr(map, 'seed_box', None) is not None:
@@ -174,8 +172,8 @@ def run_map(map):
         map.reste_time = gestion_timer(map, map.time_start)
     elif map.niveau == 3:
         update_lvl_3(map)
-        gestion_pollution_bare(map)
-        gestion_score_bare(map, (map.score * 100) / 10)
+        gestion_score_bare(map, (map.score * 100) / 15)
+        map.reste_time = gestion_timer(map, map.time_start)
     elif map.niveau == 4:
         dt = 1 / 60  # Assuming 60 FPS
         if not map.game_over and not map.victory:

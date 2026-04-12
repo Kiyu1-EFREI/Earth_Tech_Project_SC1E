@@ -16,7 +16,7 @@ def init_lvl_3(map):
     map.water = 0
     map.score = 0
     map.pollution = 0
-    map.temps_restant = 60 * 60
+    map.time_start = 10 # 2:00
     map.dechets = []
     map.types_dechets = ["plastique", "verre", "reste"]
     map.level3_finished = False
@@ -30,7 +30,7 @@ def init_lvl_3(map):
     }
 
     map.poubelles = []
-    map.aleatoire.nb_s, map.aleatoire.min, map.aleatoire.max = 2, 2, 4
+    map.aleatoire.nb_s, map.aleatoire.min, map.aleatoire.max = 4, 4, 7
     map.pollution_bare = ObjetClass(pygame.Rect(10, 40, 200, 25), "pollution_bare")
     map.pollution_bare.color = (255, 0, 0)
 
@@ -51,7 +51,7 @@ def utilisation_lvl_3(map, e):
     if e.type in ["poubelle_plastique", "poubelle_verre", "poubelle_reste"]:
         if map.joueur.inventory.get(e.type_dechet, 0) > 0:
             map.joueur.inventory[e.type_dechet] -= 1
-            map.score += 1
+            map.score -= 1
             map.pollution = max(0, map.pollution - 5)
             map.interaction = True
         else:
@@ -89,20 +89,21 @@ def generer_dechet(map):
             pygame.transform.scale(pygame.image.load(f"./Asset/maps/{img_name}").convert_alpha(), (50, 50))]
         dechet.visible = True
         map.dechets.append(dechet)
+        map.score += 1
 
 
 def update_lvl_3(map):
     if not hasattr(map, 'types_dechets'):
         return
 
-    if map.score >= 20:
+    if not(map.reste_time):
         if not map.popup_active and not getattr(map, 'level3_finished', False):
             map.popup_active = True
             map.popup_timer = 1000
             map.level3_finished = True
         return
 
-    if hasattr(map, 'pollution') and map.pollution >= 150:
+    if hasattr(map, 'pollution') and map.score >= 15:
         map.defeat_active = True
         return
 
