@@ -389,6 +389,32 @@ def draw_victory(screen, map):
         map.niveau = -2
         map.victory = False
 
+def draw_player_hp_bar(screen, map):
+    """
+    Affiche la barre de vie du joueur au niveau 4.
+    """
+    if map.niveau != 4 or not hasattr(map.joueur, 'hp'):
+        return
+
+    bar_x = 30
+    bar_y = 30  # En dessous de la barre du boss
+    bar_w = 300
+    bar_h = 25
+
+    # Fond
+    pygame.draw.rect(screen, (40, 40, 40), (bar_x, bar_y, bar_w, bar_h))
+    # Vie restante
+    hp_ratio = max(map.joueur.hp, 0) / map.joueur.max_hp
+    pygame.draw.rect(screen, (50, 180, 50), (bar_x, bar_y, int(bar_w * hp_ratio), bar_h))
+    # Contour
+    pygame.draw.rect(screen, (255, 255, 255), (bar_x, bar_y, bar_w, bar_h), 2)
+
+    font = pygame.font.Font(None, 24)
+    text = font.render(f"Joueur: {map.joueur.hp}/{map.joueur.max_hp}", True, (255, 255, 255))
+    screen.blit(text, (bar_x + 5, bar_y + 5))  # Texte à l'intérieur
+
+
+
 def draw_level_intro(screen, map):
     if not map.level_intro_active:
         return

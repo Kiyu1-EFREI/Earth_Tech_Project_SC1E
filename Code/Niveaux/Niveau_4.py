@@ -130,7 +130,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         self.vulnerable = False
         self.alive = True
 
-        self.font = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font(None, 24)
 
         # cadence de tir
         self.fire_interval = 3.0
@@ -278,7 +278,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         Affiche la barre de vie du boss.
         """
         bar_x = 30
-        bar_y = 30
+        bar_y = 70
         bar_w = 300
         bar_h = 25
 
@@ -290,8 +290,8 @@ class MonstrePollution(pygame.sprite.Sprite):
         # Contour
         pygame.draw.rect(surface, (255, 255, 255), (bar_x, bar_y, bar_w, bar_h), 2)
 
-        text = self.font.render(f"Monstre de Pollution: {self.hp}/{self.max_hp}", True, (255, 255, 255))
-        surface.blit(text, (bar_x, bar_y + 32))
+        text = self.font.render(f"Monstre: {self.hp}/{self.max_hp}", True, (255, 255, 255))
+        surface.blit(text, (bar_x + 5, bar_y + 5))  # Texte à l'intérieur
 
     def draw(self, surface):
         """

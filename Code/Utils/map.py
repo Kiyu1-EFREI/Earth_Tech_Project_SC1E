@@ -135,6 +135,8 @@ def run_map(map):
     draw_defeat(map.screen, map)
     # Afficher la victoire si active
     draw_victory(map.screen, map)
+    # Afficher la barre de vie du joueur si niveau 4
+    draw_player_hp_bar(map.screen, map)
     # Si défaite est active, arrêter le gameplay
     if getattr(map, 'defeat_active', False) or getattr(map, 'victory', False):
         return
@@ -190,12 +192,6 @@ def run_map(map):
 
         # Draw boss
         map.boss.draw(map.screen)
-
-        # Draw player HP
-        font = pygame.font.Font(None, 36)
-        hp_text = f"HP: {map.joueur.hp}/{map.joueur.max_hp}"
-        text = font.render(hp_text, True, (255, 255, 255))
-        map.screen.blit(text, (10, 10))
 
         # Check win condition
         if not map.boss.alive and not map.victory:
