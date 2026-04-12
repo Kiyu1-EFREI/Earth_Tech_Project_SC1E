@@ -28,7 +28,7 @@ def utilisation_lvl_2(map, e):
             map.score -= 1
 
             # Vérifier si le joueur a gagné
-            if not(map.reste_time) and len(map.fire) == 0:
+            if len(map.fire) == 0 and not getattr(map, 'popup_active', False):
                 map.fire.clear()  # Fait disparaître toutes les flammes restantes
                 map.popup_active = True
                 map.popup_timer = 1000
@@ -69,5 +69,5 @@ def init_lvl_2(map):
     map.aleatoire.min = 3
     map.aleatoire.max = 6
     map.score = 3
-    map.time_start = 90 # 1:30
+    map.time_start = 60 # 1:00
     map.defeat_active = False

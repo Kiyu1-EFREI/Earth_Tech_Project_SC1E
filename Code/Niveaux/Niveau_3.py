@@ -19,6 +19,7 @@ def init_lvl_3(map):
     map.temps_restant = 60 * 60
     map.dechets = []
     map.types_dechets = ["plastique", "verre", "reste"]
+    map.level3_finished = False
 
     map.joueur.inventory = {"plastique": 0, "verre": 0, "reste": 0}
 
@@ -67,30 +68,46 @@ def utilisation_lvl_3(map, e):
 
 def generer_dechet(map):
     # Verification que la plateforme est libre
-    if len(map.dechets) < 10:
-        type_dechet = choice(map.types_dechets)
-        plateformes = [p for p in map.element if p.type == "platform"]
-        # On ne garde que les plateformes sans déchet déjà présent
-        libres = [p for p in plateformes if
-                  not any(abs(d.rect.x - (p.rect.x + (p.rect.width - 50) // 2)) < 10 for d in map.dechets)]
+    if not hasattr(map, 'types_dechets') or not map.types_dechets or len(map.dechets) >= 10:
+        return
+    type_dechet = choice(map.types_dechets)
+    plateformes = [p for p in map.element if p.type == "platform"]
+    # On ne garde que les plateformes sans déchet déjà présent
+    libres = [p for p in plateformes if
+              not any(abs(d.rect.x - (p.rect.x + (p.rect.width - 50) // 2)) < 10 for d in map.dechets)]
 
-        if libres:
-            p = choice(libres)
-            x = p.rect.x + (p.rect.width - 50) // 2
-            y = p.rect.y - 50
-            dechet = ObjetClass(pygame.Rect(x, y, 50, 50), "dechet")
-            dechet.type_dechet = type_dechet
+    if libres:
+        p = choice(libres)
+        x = p.rect.x + (p.rect.width - 50) // 2
+        y = p.rect.y - 50
+        dechet = ObjetClass(pygame.Rect(x, y, 50, 50), "dechet")
+        dechet.type_dechet = type_dechet
 
-            # On s'assure que le nom du fichier image est correct
-            img_name = f"dechet_{type_dechet}.png"
-            dechet.frame = [
-                pygame.transform.scale(pygame.image.load(f"./Asset/maps/{img_name}").convert_alpha(), (50, 50))]
-            dechet.visible = True
-            map.dechets.append(dechet)
+        # On s'assure que le nom du fichier image est correct
+        img_name = f"dechet_{type_dechet}.png"
+        dechet.frame = [
+            pygame.transform.scale(pygame.image.load(f"./Asset/maps/{img_name}").convert_alpha(), (50, 50))]
+        dechet.visible = True
+        map.dechets.append(dechet)
 
 
 def update_lvl_3(map):
-    if not hasattr(map, 'types_dechets'): return
-    if aleatoire(map.aleatoire): generer_dechet(map)
-    map.pollution = min(150, map.pollution + 0.1)
-    if map.pollution >= 150 or map.score >= 20: map.niveau = 0
+    if not hasattr(map, 'types_dechets'):
+        return
+
+    if map.score >= 20:
+        if not map.popup_active and not getattr(map, 'level3_finished', False):
+            map.popup_active = True
+            map.popup_timer = 1000
+            map.level3_finished = True
+        return
+
+    if hasattr(map, 'pollution') and map.pollution >= 150:
+        map.niveau = 0
+        return
+
+    if aleatoire(map.aleatoire):
+        generer_dechet(map)
+
+    if hasattr(map, 'pollution'):
+        map.pollution = min(150, map.pollution + 0.1)

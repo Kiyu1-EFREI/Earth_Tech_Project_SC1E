@@ -269,10 +269,23 @@ def draw_popup(screen, map):
                        "3- Numérique polluant : Si Internet était un pays, il serait le 3ème plus gros consommateur \nd'électricité au monde.")
             next_level_text = "Passage au niveau 3 dans {seconds_left}s"
             next_level = 3
+        elif map.niveau == 3:
+            message = ("1- La règle des 3R\n"
+                       "C’est le code secret de l'écologie :\n\n"
+                       "Réduire : Est-ce que j'ai vraiment besoin de ce nouveau jouet en plastique ?\n\n"
+                       "Réutiliser : Un bocal en verre peut devenir un pot à crayons stylé.\n\n"
+                       "Recycler : Donne une seconde vie à tes déchets en les mettant dans la bonne poubelle.\n\n"
+                       "2- Deviens un \"Chasseur de Fantômes\" Énergétiques\n"
+                       "Même éteints, les appareils branchés (comme une console ou un chargeur) consomment un tout petit peu d'électricité. C'est ce qu'on appelle la consommation veille.\n"
+                       "3- Manger local : Choisir une pomme de ton pays plutôt qu'une mangue venue par avion réduit énormément la pollution.")
+            next_level_text = "Passage au niveau 4 dans {seconds_left}s"
+            next_level = 4
         else:
             message = "Message par défaut"
             next_level_text = "Passage au niveau suivant dans {seconds_left}s"
             next_level = map.niveau + 1
+
+
 
 
 
