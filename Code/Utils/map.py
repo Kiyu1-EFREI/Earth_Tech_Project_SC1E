@@ -122,11 +122,11 @@ def run_map(map):
         pygame.draw.rect(map.screen, (255, 255, 255), map.seed_box, 3, border_radius=8)
         if map.seed:
             if map.niveau == 1:
-                cx, cy = map.seed_box.center
-                pygame.draw.circle(map.screen, (140, 90, 30), (cx, cy), 14)
-                pygame.draw.circle(map.screen, (160, 110, 55), (cx, cy + 2), 10)
+                img_path = "./Asset/maps/graine.png"
+                img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (40, 40))
+                map.screen.blit(img, (map.seed_box.x + 5, map.seed_box.y + 5))
             elif map.niveau == 4:
-                img_path = "./Asset/maps/tas_terre_plant.png"
+                img_path = "./Asset/maps/graine_magique.png"
                 img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (40, 40))
                 map.screen.blit(img, (map.seed_box.x + 5, map.seed_box.y + 5))
 
