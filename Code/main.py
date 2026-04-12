@@ -66,6 +66,18 @@ try:
             map.click = click
             run_map(map)
             new_niveau = map.niveau
+            if (map.niveau == 2 or map.niveau == 3) and map.level_started:
+                rect = pygame.Rect(10, 10, 200, 25)
+
+                # Surface transparente
+                surface = pygame.Surface((rect.width, rect.height), pygame.SRCALPHA)
+
+                # Dessin de la bordure (fond non rempli → transparent)
+                pygame.draw.rect(surface, (255, 255, 255), surface.get_rect(), 2)
+
+                # Affichage
+                screen.blit(surface, (rect.x, rect.y))
+
         else:
             new_niveau = run_menu(screen, element, niveau, click, continue_click, EOTF_list)
 
@@ -75,6 +87,8 @@ try:
             if niveau > 0:
                 map = init_map(niveau, screen, EOTF_list)
                 map.screen = screen
+                if niveau == 4 and EOTF_list[2] == True:
+                    map.boss.fire_interval /= 3
             elif niveau == 0:
                 run = False
             else:
