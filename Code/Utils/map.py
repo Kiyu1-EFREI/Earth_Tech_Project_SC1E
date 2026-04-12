@@ -117,17 +117,27 @@ def run_map(map):
         draw_list.append(map.pollution_bare)
     draw_element(map.screen, draw_list)
 
-    if (map.niveau == 1 or map.niveau == 4) and getattr(map, 'seed_box', None) is not None:
+    if (map.niveau == 1 or map.niveau == 3 or map.niveau == 4) and getattr(map, 'seed_box', None) is not None:
         pygame.draw.rect(map.screen, (30, 30, 30), map.seed_box)
         pygame.draw.rect(map.screen, (255, 255, 255), map.seed_box, 3, border_radius=8)
-        if map.seed and map.niveau == 1:
-            img_path = "./Asset/maps/graine.png"
-            img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (40, 40))
-            map.screen.blit(img, (map.seed_box.x + 5, map.seed_box.y + 5))
-        elif map.seed and map.niveau == 4:
-            img_path = "./Asset/maps/graine_magique.png"
-            img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (40, 40))
-            map.screen.blit(img, (map.seed_box.x + 5, map.seed_box.y + 5))
+        if map.seed:
+            if map.niveau == 1:
+                cx, cy = map.seed_box.center
+                pygame.draw.circle(map.screen, (140, 90, 30), (cx, cy), 14)
+                pygame.draw.circle(map.screen, (160, 110, 55), (cx, cy + 2), 10)
+            elif map.niveau == 4:
+                img_path = "./Asset/maps/tas_terre_plant.png"
+                img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (40, 40))
+                map.screen.blit(img, (map.seed_box.x + 5, map.seed_box.y + 5))
+
+        # Affichage du déchet transporté dans la case d'inventaire pour le niveau 3
+        if map.niveau == 3:
+            for type_dechet, count in map.joueur.inventory.items():
+                if count > 0:
+                    img_path = f"./Asset/maps/dechet_{type_dechet}.png"
+                    img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (40, 40))
+                    map.screen.blit(img, (map.seed_box.x + 5, map.seed_box.y + 5))
+                    break
 
     # Afficher le popup si actif
     draw_popup(map.screen, map)
@@ -140,13 +150,6 @@ def run_map(map):
     # Si défaite est active, arrêter le gameplay
     if getattr(map, 'defeat_active', False) or getattr(map, 'victory', False):
         return
-
-
-    if map.niveau == 3:
-        font = pygame.font.Font(None, 36)
-        score_text = f"Déchets déposés: {map.score}"
-        text = font.render(score_text, True, (255, 255, 255))
-        map.screen.blit(text, (10, 70))
 
         x_pos = 10
         y_pos = 100
@@ -257,7 +260,7 @@ def init_map(niveau, screen, EOTF_list):
     map.score_bare = ObjetClass(pygame.Rect(10, 10, 0, 25), "score_bare")
     map.score_bare.color = (0, 0, 0)
 
-    if niveau == 1 or niveau == 4:
+    if niveau == 1 or niveau == 3 or niveau == 4:
         map.seed_box = pygame.Rect(15, 660, 50, 50)
     else:
         map.seed_box = None
