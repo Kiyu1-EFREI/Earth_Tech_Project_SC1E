@@ -95,6 +95,13 @@ def run_map(map):
     map.aleatoire.time += map.aleatoire.speed
     map.time += 1
 
+    # Afficher l'introduction du niveau
+    draw_level_intro(map.screen, map)
+
+    # Si l'intro est active, ne pas faire le gameplay
+    if map.level_intro_active:
+        return
+
 
     mouvement(map)
     interaction(map)
@@ -126,6 +133,9 @@ def run_map(map):
     draw_popup(map.screen, map)
     # Afficher la défaite si active
     draw_defeat(map.screen, map)
+    # Si défaite est active, arrêter le gameplay
+    if getattr(map, 'defeat_active', False):
+        return
 
 
     if map.niveau == 3:

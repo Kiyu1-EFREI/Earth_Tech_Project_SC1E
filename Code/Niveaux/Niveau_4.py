@@ -225,7 +225,7 @@ class MonstrePollution(pygame.sprite.Sprite):
         dx = target_x - origin_x
         dy = target_y - origin_y
 
-        flight_time = random.uniform(1.5, 3.0)
+        flight_time = random.uniform(1.0, 2.0)
 
         vx = dx / flight_time
         vy0 = (dy - 0.5 * GRAVITY * (flight_time ** 2)) / flight_time

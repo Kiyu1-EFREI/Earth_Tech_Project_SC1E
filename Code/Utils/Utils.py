@@ -342,6 +342,105 @@ def draw_defeat(screen, map):
             map.niveau = -2
             map.defeat_active = False
 
+
+def draw_level_intro(screen, map):
+    if not map.level_intro_active:
+        return
+
+    # Créer un overlay sombre semi-transparent
+    overlay = pygame.Surface((screen.get_width(), screen.get_height()), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 200))
+    screen.blit(overlay, (0, 0))
+
+    # Dimensions de la fenêtre popup
+    popup_width = 1000
+    popup_height = 500
+    popup_x = (screen.get_width() - popup_width) // 2
+    popup_y = (screen.get_height() - popup_height) // 2
+
+    # Créer une surface avec transparence pour le popup
+    popup_surface = pygame.Surface((popup_width, popup_height), pygame.SRCALPHA)
+
+    # Dessiner un rectangle arrondi semi-transparent
+    pygame.draw.rect(popup_surface, (50, 50, 50, 240), popup_surface.get_rect(), border_radius=20)
+    pygame.draw.rect(popup_surface, (100, 200, 100, 255), popup_surface.get_rect(), width=3, border_radius=20)
+
+    # Afficher la popup sur l'écran
+    screen.blit(popup_surface, (popup_x, popup_y))
+
+    # Messages d'introduction selon le niveau
+    if map.niveau == 1:
+        title = "🎮 Niveau 1 : Le Réveil de la Forêt"
+        objective = "Objectif : Apprendre les bases et planter la vie."
+        story = (
+            "Bienvenue, jeune gardien de la nature ! Ici, pas de danger : prends le temps de découvrir tes pouvoirs.\n"
+            "Attrape les graines transportées par les oiseaux, plante-les et utilise l'eau de l'étang\n"
+            "pour les aider à grandir. La forêt compte sur toi pour s'épanouir !")
+        action = "Action : Appuie sur \"E\" pour intercepter les graines, planter et remplir ton réservoir."
+
+    elif map.niveau == 2:
+        title = "🔥 Niveau 2 : Alerte Incendie"
+        objective = "Objectif : Protéger la forêt des flammes."
+        story = ("Vite ! Des mégots de cigarettes et la chaleur ont déclenché un incendie.\n"
+                 "Si le feu se propage trop, la forêt disparaîtra ! Remplis vite ton réservoir à l'étang\n"
+                 "et fonce éteindre les flammes avant qu'il ne soit trop tard. Sois rapide, chaque seconde compte !")
+        action = "Action : Récupère l'eau et appuie sur \"E\" face aux flammes pour les éteindre."
+
+    elif map.niveau == 3:
+        title = "♻️ Niveau 3 : Le Défi du Tri"
+        objective = "Objectif : Nettoyer la nature et trier les déchets."
+        story = ("Oh non ! Des déchets polluent notre belle forêt. Ramasse le plastique, le verre et le papier,\n"
+                 "puis dépose-les dans le bac de la bonne couleur. Fais preuve de précision et de rapidité :\n"
+                 "si tu te trompes, un conseil t'aidera à devenir un pro du recyclage !")
+        action = "Action : Utilise la touche \"E\" pour ramasser et trier les déchets."
+
+    elif map.niveau == 4:
+        title = "👾 Niveau Final : Le Grand Combat"
+        objective = "Objectif : Vaincre le Monstre de Pollution."
+        story = ("Le Monstre de Pollution menace la Terre ! Évite ses nuages polluants et récupère les graines\n"
+                 "qu'il projette. Utilise la puissance des graines pour le rendre vulnérable et le vaincre\n"
+                 "pour de bon. Libère la nature et montre que nos actions peuvent tout changer !")
+        action = "Action : Évite les trajectoires du boss et attaque-le avec les graines récupérées."
+
+    else:
+        title = "Niveau"
+        objective = ""
+        story = ""
+        action = ""
+
+    # Afficher le titre
+    font_title = pygame.font.Font(None, 48)
+    title_text = font_title.render(title, True, (100, 255, 100))
+    screen.blit(title_text, (popup_x + 30, popup_y + 30))
+
+    # Afficher l'objectif
+    font_objective = pygame.font.Font(None, 32)
+    objective_text = font_objective.render(objective, True, (255, 200, 100))
+    screen.blit(objective_text, (popup_x + 30, popup_y + 90))
+
+    # Afficher l'histoire
+    font_story = pygame.font.Font(None, 24)
+    y_offset = popup_y + 140
+    for line in story.split('\n'):
+        story_surface = font_story.render(line, True, (255, 255, 255))
+        screen.blit(story_surface, (popup_x + 30, y_offset))
+        y_offset += 35
+
+    # Afficher l'action
+    font_action = pygame.font.Font(None, 22)
+    action_text = font_action.render(action, True, (200, 255, 200))
+    screen.blit(action_text, (popup_x + 30, y_offset + 20))
+
+    # Afficher "Clique pour commencer"
+    font_click = pygame.font.Font(None, 28)
+    click_text = font_click.render("Clique pour commencer", True, (255, 255, 0))
+    screen.blit(click_text, (popup_x + popup_width // 2 - click_text.get_width() // 2, popup_y + popup_height - 50))
+
+    # Si on clique, commencer le niveau
+    if map.click:
+        map.level_intro_active = False
+        map.level_started = True
+
 def gestion_timer(map, max_time): #max_time en seconde
     time = map.time/60
     timer_value = max_time - time

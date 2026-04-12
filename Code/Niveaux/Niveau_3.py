@@ -103,7 +103,7 @@ def update_lvl_3(map):
         return
 
     if hasattr(map, 'pollution') and map.pollution >= 150:
-        map.niveau = 0
+        map.defeat_active = True
         return
 
     if aleatoire(map.aleatoire):
