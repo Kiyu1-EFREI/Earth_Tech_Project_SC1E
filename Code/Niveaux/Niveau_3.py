@@ -16,7 +16,7 @@ def init_lvl_3(map):
     map.water = 0
     map.score = 0
     map.pollution = 0
-    map.time_start = 10 # 2:00
+    map.time_start = 120 # 2:00
     map.dechets = []
     map.types_dechets = ["plastique", "verre", "reste"]
     map.level3_finished = False
