@@ -1,17 +1,19 @@
-from Code.Niveaux.Niveau_1 import*
-from Code.Niveaux.Niveau_2 import*
-from Code.Niveaux.Niveau_3 import*
-from Code.Niveaux.Niveau_4 import*
+import pygame
+from Code.Niveaux.Niveau_1 import *
+from Code.Niveaux.Niveau_2 import *
+from Code.Niveaux.Niveau_3 import *
+from Code.Niveaux.Niveau_4 import *
 from Code.Niveaux.Niveau_4 import init_lvl_4, SCREEN_WIDTH, SCREEN_HEIGHT
-from .Utils import*
-from .classes import*
-
+from .Utils import *
+from .classes import *
 
 
 # fontion pour gerer les colisions avec les objets
 def collision(map, p):
-    if (map.joueur.rect.colliderect(p.rect) or (p.rect.top - 1 <= map.joueur.rect.bottom <= p.rect.top + 1 and p.rect.left <= map.joueur.rect.right and map.joueur.rect.left <= p.rect.right)) and (p.type == "wall" or p.type == "platform"):
-        #vertical
+    if (map.joueur.rect.colliderect(p.rect) or (
+            p.rect.top - 1 <= map.joueur.rect.bottom <= p.rect.top + 1 and p.rect.left <= map.joueur.rect.right and map.joueur.rect.left <= p.rect.right)) and (
+            p.type == "wall" or p.type == "platform"):
+        # vertical
         if map.vy > 0 and (map.joueur.rect.bottom - map.vy) <= p.rect.top:
             map.joueur.rect.bottom = p.rect.top
             map.vy = 0
@@ -24,7 +26,8 @@ def collision(map, p):
         elif map.joueur.rect.left < p.rect.right and (abs(map.joueur.rect.left - p.rect.right) < 15):
             map.joueur.rect.left = p.rect.right
         elif map.joueur.rect.right > p.rect.left and (abs(map.joueur.rect.right - p.rect.left) < 15):
-             map.joueur.rect.right = p.rect.left
+            map.joueur.rect.right = p.rect.left
+
 
 # Fonction pour gérer les interaction/utilisation avec la touche E
 def utilisation(map, e):
@@ -43,6 +46,7 @@ def utilisation(map, e):
         elif map.niveau == 4:
             utilisation_lvl_4(map, e)
 
+
 def utilisation_lvl_4(map, e):
     # Pour le niveau 4, les interactions sont gérées dans run_map
     pass
@@ -55,6 +59,7 @@ def interaction(map):
         collision(map, e)
         if map.keys[pygame.K_e]:
             utilisation(map, e)
+
 
 # fonction pour gerer touts les mouvements du joueur
 def mouvement(map):
@@ -89,8 +94,10 @@ def mouvement(map):
     if (map.keys[pygame.K_SPACE] or map.keys[pygame.K_UP]) and map.en_contact:
         map.vy = -14
 
+
 # fonction qui permet de faire tourner la map
 def run_map(map):
+    initial_niveau = map.niveau
     map.keys = pygame.key.get_pressed()
     map.aleatoire.time += map.aleatoire.speed
     map.time += 1
@@ -101,7 +108,6 @@ def run_map(map):
     # Si l'intro est active, ne pas faire le gameplay
     if map.level_intro_active:
         return
-
 
     mouvement(map)
     interaction(map)
@@ -130,15 +136,22 @@ def run_map(map):
 
         # Affichage du déchet transporté dans la case d'inventaire pour le niveau 3
         if map.niveau == 3:
-            for type_dechet, count in map.joueur.inventory.items():
-                if count > 0:
-                    img_path = f"./Asset/maps/dechet_{type_dechet}.png"
-                    img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (40, 40))
-                    map.screen.blit(img, (map.seed_box.x + 5, map.seed_box.y + 5))
-                    break
+            if hasattr(map.joueur, 'inventory'):
+                for type_dechet, count in map.joueur.inventory.items():
+                    if count > 0:
+                        img_path = f"./Asset/maps/dechet_{type_dechet}.png"
+                        img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (40, 40))
+                        map.screen.blit(img, (map.seed_box.x + 5, map.seed_box.y + 5))
+                        break
 
     # Afficher le popup si actif
     draw_popup(map.screen, map)
+
+    # Si le niveau a changé via draw_popup (transition), on arrête l'exécution pour ce tour
+    # afin de laisser main.py réinitialiser l'objet map proprement.
+    if map.niveau != initial_niveau:
+        return
+
     # Afficher la défaite si active
     draw_defeat(map.screen, map)
     # Afficher la victoire si active
@@ -149,16 +162,6 @@ def run_map(map):
     if getattr(map, 'defeat_active', False) or getattr(map, 'victory', False):
         return
 
-        x_pos = 10
-        y_pos = 100
-        if hasattr(map.joueur, 'inventory'):
-            for type_dechet, count in map.joueur.inventory.items():
-                if count > 0:
-                    img_path = f"./Asset/maps/dechet_{type_dechet}.png"
-                    img = pygame.transform.scale(pygame.image.load(img_path).convert_alpha(), (50, 50))
-                    map.screen.blit(img, (x_pos, y_pos))
-                    x_pos += 60
-
     if map.keys[pygame.K_e]:
         map.press_e = True
     else:
@@ -168,43 +171,46 @@ def run_map(map):
         avancer_oiseau(map, 2)
     elif map.niveau == 2:
         generation_fire(map)
-        gestion_score_bare(map, (map.score * 100)/15)
+        gestion_score_bare(map, (map.score * 100) / 15)
         map.reste_time = gestion_timer(map, map.time_start)
     elif map.niveau == 3:
         update_lvl_3(map)
         gestion_score_bare(map, (map.score * 100) / 15)
         map.reste_time = gestion_timer(map, map.time_start)
     elif map.niveau == 4:
-        dt = 1 / 60  # Assuming 60 FPS
-        if not map.game_over and not map.victory:
-            map.boss.update(dt, map.joueur)
+        dt = 1 / 60
+        # Utilisation de getattr pour éviter les AttributeError lors des transitions
+        game_over = getattr(map, 'game_over', False)
+        victory = getattr(map, 'victory', False)
+        boss = getattr(map, 'boss', None)
 
-        # Check seed pickup
-        if map.press_e and not map.seed:
-            seed_hits = pygame.sprite.spritecollide(map.joueur, map.boss.seeds, True)
-            if seed_hits:
-                map.seed = True
+        if boss:
+            if not game_over and not victory:
+                boss.update(dt, map.joueur)
 
-        # Check attack on boss
-        if map.keys[pygame.K_e] and map.joueur.rect.colliderect(map.boss.rect) and map.seed:
-            map.boss.become_vulnerable()
-            map.boss.take_damage(1)
-            map.seed = False
+            # Check seed pickup
+            if map.press_e and not map.seed:
+                seed_hits = pygame.sprite.spritecollide(map.joueur, boss.seeds, True)
+                if seed_hits:
+                    map.seed = True
 
-        # Draw boss
-        map.boss.draw(map.screen)
+            # Check attack on boss
+            if map.keys[pygame.K_e] and map.joueur.rect.colliderect(boss.rect) and map.seed:
+                boss.become_vulnerable()
+                boss.take_damage(1)
+                map.seed = False
 
-        # Check win condition
-        if not map.boss.alive and not map.victory:
-            map.victory = True
+            # Draw boss
+            boss.draw(map.screen)
 
-        # Check game over
-        if map.joueur.hp <= 0 and not map.game_over:
-            map.game_over = True
-            map.defeat_active = True
-        
+            # Check win condition
+            if not boss.alive and not victory:
+                map.victory = True
 
-
+            # Check game over
+            if map.joueur.hp <= 0 and not game_over:
+                map.game_over = True
+                map.defeat_active = True
 
 
 # fonction pour initialiser la map
@@ -248,8 +254,10 @@ def init_map(niveau, screen, EOTF_list):
         pygame.transform.scale(pygame.image.load("./Asset/player/player_left_4.png").convert_alpha(), (50, 50))
     ]
 
-    map.player_img[1][False] = [pygame.transform.scale(pygame.image.load("./Asset/player/player_right_jump.png").convert_alpha(), (50, 50))]
-    map.player_img[-1][False] = [pygame.transform.scale(pygame.image.load("./Asset/player/player_left_jump.png").convert_alpha(), (50, 50))]
+    map.player_img[1][False] = [
+        pygame.transform.scale(pygame.image.load("./Asset/player/player_right_jump.png").convert_alpha(), (50, 50))]
+    map.player_img[-1][False] = [
+        pygame.transform.scale(pygame.image.load("./Asset/player/player_left_jump.png").convert_alpha(), (50, 50))]
 
     map.water_tube = ObjetClass(pygame.Rect(15, 530, 65, 120), "water_tube")
     map.water_tube.color = (255, 255, 255)
@@ -282,12 +290,14 @@ def init_map(niveau, screen, EOTF_list):
 
     return map
 
+
 # fonction resize map
 def map_resize(map, screen_width, screen_height, old_w, old_h):
     resize(map.element[1:], screen_width, screen_height, old_w, old_h)
     resize(map.oiseau, screen_width, screen_height, old_w, old_h)
     resize(map.fire, screen_width, screen_height, old_w, old_h)
     resize(map.joueur, screen_width, screen_height, old_w, old_h)
+
 
 def map_upgrade_applid(map, EOTF_list):
     if EOTF_list[0]:
