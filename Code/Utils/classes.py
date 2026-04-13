@@ -51,6 +51,10 @@ class MapClass:
         self.popup_timer = 0
         self.level_intro_active = True
         self.level_started = False
+        self.game_over = False
+        self.victory = False
+        self.boss = None
+        self.defeat_active = False
 
 
 # Class pour cree des element, avec ou sans animation, qui vont etre ou pas, afficher a l'ecran
