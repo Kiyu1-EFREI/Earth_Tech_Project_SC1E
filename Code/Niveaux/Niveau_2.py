@@ -31,7 +31,7 @@ def utilisation_lvl_2(map, e):
             if len(map.fire) == 0 and not getattr(map, 'popup_active', False):
                 map.fire.clear()  # Fait disparaître toutes les flammes restantes
                 map.popup_active = True
-                map.popup_timer = 1000
+                map.popup_timer = 1500
 
 # permet de gerer les feu
 def generation_fire(map):

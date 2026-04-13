@@ -30,7 +30,7 @@ def init_lvl_3(map):
     }
 
     map.poubelles = []
-    map.aleatoire.nb_s, map.aleatoire.min, map.aleatoire.max = 3, 3, 6
+    map.aleatoire.nb_s, map.aleatoire.min, map.aleatoire.max = 3, 5,8
     map.pollution_bare = ObjetClass(pygame.Rect(10, 40, 200, 25), "pollution_bare")
     map.pollution_bare.color = (255, 0, 0)
 
@@ -99,11 +99,11 @@ def update_lvl_3(map):
     if not(map.reste_time):
         if not map.popup_active and not getattr(map, 'level3_finished', False):
             map.popup_active = True
-            map.popup_timer = 1000
+            map.popup_timer = 1500
             map.level3_finished = True
         return
 
-    if hasattr(map, 'pollution') and map.score >= 7:
+    if hasattr(map, 'pollution') and map.score >= 10:
         map.defeat_active = True
         return
 

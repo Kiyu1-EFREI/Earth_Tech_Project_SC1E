@@ -26,7 +26,7 @@ def utilisation_lvl_1(map, e):
             # Vérifier si les 3 plantes sont plantées
             if map.score == 3:
                 map.popup_active = True
-                map.popup_timer = 1000  # 30 secondes à 60 FPS
+                map.popup_timer = 1500  # 30 secondes à 60 FPS
 
     elif e.type == "oiseau" and e.variable[4] and map.seed == False and map.press_e == False:
         map.seed = True

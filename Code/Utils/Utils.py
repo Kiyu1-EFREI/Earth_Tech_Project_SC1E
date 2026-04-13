@@ -266,14 +266,11 @@ def draw_popup(screen, map):
             next_level_text = "Passage au niveau 3 dans {seconds_left}s"
             next_level = 3
         elif map.niveau == 3:
-            message = ("1- La règle des 3R\n"
-                       "C’est le code secret de l'écologie :\n\n"
-                       "Réduire : Est-ce que j'ai vraiment besoin de ce nouveau jouet en plastique ?\n\n"
-                       "Réutiliser : Un bocal en verre peut devenir un pot à crayons stylé.\n\n"
-                       "Recycler : Donne une seconde vie à tes déchets en les mettant dans la bonne poubelle.\n\n"
-                       "2- Deviens un \"Chasseur de Fantômes\" Énergétiques\n"
-                       "Même éteints, les appareils branchés (comme une console ou un chargeur) consomment un\n tout petit peu d'électricité. C'est ce qu'on appelle la consommation veille.\n"
-                       "3- Manger local : Choisir une pomme de ton pays plutôt qu'une mangue venue par avion réduit\n énormément la pollution.")
+            message = ("🥗 Alimentation et Biodiversité\n\n"
+                       "Ce que nous mettons dans notre assiette a un impact direct sur les forêts et les espèces sauvages.\n\n"
+                       "Le Fait : La production d'un seul burger de bœuf nécessite environ 2 400 litres d'eau (l'équivalent de 16 baignoires remplies).\n\n"
+                       "Le Conseil : Essaie de manger local et de saison. Moins de trajet pour tes légumes signifie moins de pollution pour la planète.\n\n"
+                       "Le Saviez-vous ? : Les abeilles et autres pollinisateurs sont responsables de la reproduction de 80% des plantes à fleurs dans le monde. Sans eux, nos supermarchés seraient bien vides !")
             next_level_text = "Passage au niveau 4 dans {seconds_left}s"
             next_level = 4
         else:
