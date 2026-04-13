@@ -1,7 +1,6 @@
 from Utils.map import*
 from Menu.menu import*
 import pygame
-from Code.Niveaux.Niveau_4 import init_lvl_4
 from codecarbon import EmissionsTracker
 # structure pygame
 pygame.init()
@@ -39,8 +38,8 @@ else:
 #resize(element, screen.get_width(), screen.get_height(), 1280, 720)
 
 # Boucle principale de Pygame
-#tracker = EmissionsTracker()
-#tracker.start()
+tracker = EmissionsTracker()
+tracker.start()
 try:
     run = True
     while run:
@@ -98,6 +97,7 @@ try:
         pygame.display.flip()
         clock.tick(60)
 finally:
-    #tracker.stop()
+    emissions = tracker.stop()
+    print(f"Émissions de CO2 pour cette session : {emissions:.6f} kg")
     pass
 pygame.quit()
