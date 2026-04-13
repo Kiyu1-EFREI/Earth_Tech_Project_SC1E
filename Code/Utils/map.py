@@ -175,7 +175,7 @@ def run_map(map):
         map.reste_time = gestion_timer(map, map.time_start)
     elif map.niveau == 3:
         update_lvl_3(map)
-        gestion_score_bare(map, (map.score * 100) / 15)
+        gestion_score_bare(map, (map.score * 100) / 7)
         map.reste_time = gestion_timer(map, map.time_start)
     elif map.niveau == 4:
         dt = 1 / 60

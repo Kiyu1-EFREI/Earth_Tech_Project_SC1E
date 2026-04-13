@@ -30,7 +30,7 @@ def init_lvl_3(map):
     }
 
     map.poubelles = []
-    map.aleatoire.nb_s, map.aleatoire.min, map.aleatoire.max = 4, 4, 7
+    map.aleatoire.nb_s, map.aleatoire.min, map.aleatoire.max = 3, 3, 6
     map.pollution_bare = ObjetClass(pygame.Rect(10, 40, 200, 25), "pollution_bare")
     map.pollution_bare.color = (255, 0, 0)
 
@@ -103,7 +103,7 @@ def update_lvl_3(map):
             map.level3_finished = True
         return
 
-    if hasattr(map, 'pollution') and map.score >= 15:
+    if hasattr(map, 'pollution') and map.score >= 7:
         map.defeat_active = True
         return
 
