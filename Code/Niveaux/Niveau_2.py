@@ -69,5 +69,5 @@ def init_lvl_2(map):
     map.aleatoire.min = 3
     map.aleatoire.max = 6
     map.score = 3
-    map.time_start = 120 # 2:00
+    map.time_start = 60 # 2:00
     map.defeat_active = False
