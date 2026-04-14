@@ -94,6 +94,14 @@ class MagicSeed(pygame.sprite.Sprite):
             self.pos_x += self.vx * dt
             self.pos_y += self.vy * dt
 
+            # Empêcher de sortir de l'écran (bords gauche et droit)
+            if self.pos_x < 0:
+                self.pos_x = 0
+                self.vx = 0
+            elif self.pos_x > SCREEN_WIDTH - self.rect.width:
+                self.pos_x = SCREEN_WIDTH - self.rect.width
+                self.vx = 0
+
             self.rect.x = int(self.pos_x)
             self.rect.y = int(self.pos_y)
 
